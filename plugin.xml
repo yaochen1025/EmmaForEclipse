@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Emma"
+            id="emmaPlugin">
+      </category>
+      <view
+            name="Emma For Eclipse"
+            icon="icons/sample.gif"
+            category="emmaPlugin"
+            class="emmaforeclipse.views.PluginView"
+            id="emmaforeclipse.views.PluginView">
+      </view>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
        <command
            label="Emma Generate HTML"
-           commandId="plug.convert"
-         
+           commandId="plug.convert" 
            style="push">
          </command>
          
@@ -22,8 +38,4 @@
             name="Convert">
       </command>
    </extension>
-   
- 
-   
-
 </plugin> 
