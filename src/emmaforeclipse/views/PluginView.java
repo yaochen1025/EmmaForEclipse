@@ -1,6 +1,8 @@
 package emmaforeclipse.views;
 
 
+import java.io.IOException;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
@@ -13,12 +15,14 @@ import org.eclipse.swt.SWT;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
 
 
 /**
@@ -50,29 +54,100 @@ public class PluginView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+
+	private Text projectDir;
+	private Text testDir;
+	private Button projectDirSelectButton;
+	private Button testDirSelectButton;
+
+	private Text command;
+	private Button runButton;
+
+	Composite parent;
 	
-		
+
 	/**
 	 * This is a callback that will allow us
 	 * to create the viewer and initialize it.
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+		this.parent = parent;
+		
 		GridLayout layout = new GridLayout();
-	    layout.numColumns = 2;
-	    parent.setLayout(layout);
-	    
-	    Label label1 = new Label(parent, SWT.NONE);
-	    label1.setText("Project Directory");
-	    Text projectDir = new Text(parent, SWT.BORDER);
-	    projectDir.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-	    
-	    
-	    new Label(parent, SWT.NONE).setText("Test Directory");
-	    Text testDir = new Text(parent, SWT.BORDER);
-	    testDir.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
-	        false));
+		layout.numColumns = 3;
+		parent.setLayout(layout);
+
+		Label label1 = new Label(parent, SWT.NONE);
+		label1.setText("Project Directory");
+		projectDir = new Text(parent, SWT.BORDER);
+		projectDirSelectButton = new Button(parent, SWT.PUSH);
+		projectDirSelectButton.setText("Choose");
+		projectDir.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		projectDirSelectButton.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false));
+		addFileChooserListener(projectDirSelectButton, projectDir);
+
+		new Label(parent, SWT.NONE).setText("Test Directory");
+		testDir = new Text(parent, SWT.BORDER);
+		testDirSelectButton = new Button(parent, SWT.PUSH);
+		testDirSelectButton.setText("Choose");
+		testDir.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		testDirSelectButton.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false)); 
+		addFileChooserListener(testDirSelectButton, testDir);
+		
+		
+		new Label(parent, SWT.NONE).setText("Command");
+		command = new Text(parent, SWT.BORDER);
+		runButton = new Button(parent, SWT.PUSH);
+		runButton.setText("run");
+		command.setText("open -t /Users/glcylily/Documents/workspace/EmmaForEclipse/plugin.xml");
+		command.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		runButton.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false)); 
+		
+		runButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event arg0) {
+				String cmd = command.getText();
+				System.out.println(cmd);
+				Runtime runtime = Runtime.getRuntime() ;
+				try {
+					Process pr = runtime.exec(cmd) ;
+					pr.waitFor() ;
+				} catch (IOException | InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			
+		});
+		
 	}
+
+	private void addFileChooserListener(Button button, Text text) {
+		
+		FileSelectListener l = new FileSelectListener();
+		l.text = text;
+		button.addListener(SWT.Selection, l);
+	}
+//	
+	class FileSelectListener implements Listener{
+		Text text;
+		@Override
+		public void handleEvent(Event arg0) {			
+			DirectoryDialog directoryDialog = new DirectoryDialog(parent.getShell());
+			directoryDialog.setFilterPath("/Users/glcylily");
+			directoryDialog.setMessage("Please select a directory and click OK");
+
+			String dir = directoryDialog.open();
+			if(dir != null) {
+				text.setText(dir);
+			}			
+		}	
+	}
+	
+	
 
 	/*
 	 * The content provider class is responsible for
@@ -83,7 +158,7 @@ public class PluginView extends ViewPart {
 	 * it and always show the same content 
 	 * (like Task List, for example).
 	 */
-	 
+
 	class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
@@ -114,7 +189,7 @@ public class PluginView extends ViewPart {
 	public PluginView() {
 	}
 
-	
+
 
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
@@ -147,7 +222,7 @@ public class PluginView extends ViewPart {
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
-	
+
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
 		manager.add(action2);
@@ -162,8 +237,8 @@ public class PluginView extends ViewPart {
 		action1.setText("Action 1");
 		action1.setToolTipText("Action 1 tooltip");
 		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		
+				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+
 		action2 = new Action() {
 			public void run() {
 				showMessage("Action 2 executed");
@@ -191,9 +266,9 @@ public class PluginView extends ViewPart {
 	}
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
-			viewer.getControl().getShell(),
-			"Sample View",
-			message);
+				viewer.getControl().getShell(),
+				"Sample View",
+				message);
 	}
 
 	/**
