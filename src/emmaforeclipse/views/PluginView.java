@@ -6,17 +6,17 @@ import java.io.IOException;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.*;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
+
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.browser.*;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 
@@ -52,6 +52,8 @@ public class PluginView extends ViewPart {
 
 	private Text command;
 	private Button runButton;
+	
+	private Button browse;
 
 
 	/**
@@ -110,6 +112,13 @@ public class PluginView extends ViewPart {
 			}
 
 		});
+		
+		browse = new Button(parent, SWT.PUSH);
+		browse.setText("browse");
+		
+		BrowserListener browserListener = new BrowserListener();
+		browserListener.parent = parent;
+		browse.addListener(SWT.Selection, browserListener);
 
 	}
 
@@ -119,14 +128,30 @@ public class PluginView extends ViewPart {
 		l.text = text;
 		l.shell = parent.getShell();
 		button.addListener(SWT.Selection, l);
+	
 	}
 
+	
+	class BrowserListener implements Listener{
+		Composite parent;
+
+		@Override
+		public void handleEvent(Event arg0) {
+			
+			Shell s = new Shell(parent.getDisplay());
+			s.setLayout(new FillLayout());
+			Browser browser = new Browser(s, SWT.None);
+			browser.setUrl("http://www.eclipse.org/articles/Article-SWT-browser-widget/browser.html");
+			s.open();
+		}
+		
+	}
 	class FileSelectListener implements Listener{
 		Text text;
 		Shell shell;
 		@Override
 		public void handleEvent(Event arg0) {		
-			
+
 			ContainerSelectionDialog dialog = new ContainerSelectionDialog(shell, null, true, "Select a directory");
 			dialog.setTitle("Container Selection");
 			dialog.open();
