@@ -1,6 +1,9 @@
 package emmaforeclipse.views;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.eclipse.swt.widgets.Composite;
@@ -45,15 +48,20 @@ public class PluginView extends ViewPart {
 	 */
 	public static final String ID = "emmaforeclipse.views.PluginView";
 
-	private Text projectDir;
-	private Text testDir;
-	private Button projectDirSelectButton;
-	private Button testDirSelectButton;
+	Text projectDirBox;
+	Text testDirBox;
+	Text antBox;
+	Text emmaBox;
+	Text javaHomeBox;
+	Text androidBox;
 
-	private Text command;
-	private Button runButton;
-	
-	private Button browse;
+	Button projectDirSelectButton;
+	Button testDirSelectButton;
+	Button antSelectButton;
+	Button emmaSelectButton;
+	Button javaHomeSelectButton;
+	Button androidSelectButton;
+	Button runButton;	
 
 
 	/**
@@ -68,83 +76,138 @@ public class PluginView extends ViewPart {
 		layout.numColumns = 3;
 		parent.setLayout(layout);
 
-		Label label1 = new Label(parent, SWT.NONE);
-		label1.setText("Project Directory");
-		projectDir = new Text(parent, SWT.BORDER);
+		new Label(parent, SWT.NONE).setText("Project Directory");
+		projectDirBox = new Text(parent, SWT.BORDER);
 		projectDirSelectButton = new Button(parent, SWT.PUSH);
-		projectDirSelectButton.setText("Choose");
-		projectDir.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		projectDirSelectButton.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false));
-		addFileChooserListener(parent, projectDirSelectButton, projectDir);
+		buildSelectionRow(parent, projectDirBox, projectDirSelectButton);
 
 		new Label(parent, SWT.NONE).setText("Test Directory");
-		testDir = new Text(parent, SWT.BORDER);
+		testDirBox = new Text(parent, SWT.BORDER);
 		testDirSelectButton = new Button(parent, SWT.PUSH);
-		testDirSelectButton.setText("Choose");
-		testDir.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		testDirSelectButton.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false)); 
-		addFileChooserListener(parent, testDirSelectButton, testDir);
+		buildSelectionRow(parent, testDirBox , testDirSelectButton);
+
+		new Label(parent, SWT.NONE).setText("Ant Directory");
+		antBox = new Text(parent, SWT.BORDER);
+		antSelectButton = new Button(parent, SWT.PUSH);
+		buildSelectionRow(parent, antBox, antSelectButton);
+
+		new Label(parent, SWT.NONE).setText("Emma Path");
+		emmaBox = new Text(parent, SWT.BORDER);
+		emmaSelectButton = new Button(parent, SWT.PUSH);
+		buildSelectionRow(parent, emmaBox, emmaSelectButton);
+
+		new Label(parent, SWT.NONE).setText("Java Home");
+		javaHomeBox = new Text(parent, SWT.BORDER);
+		javaHomeSelectButton = new Button(parent, SWT.PUSH);
+		buildSelectionRow(parent, javaHomeBox, javaHomeSelectButton);
+
+		new Label(parent, SWT.NONE).setText("Android Directory");
+		androidBox = new Text(parent, SWT.BORDER);
+		androidSelectButton = new Button(parent, SWT.PUSH);
+		buildSelectionRow(parent, androidBox, androidSelectButton);
 
 
-		new Label(parent, SWT.NONE).setText("Command");
-		command = new Text(parent, SWT.BORDER);
+		new Label(parent, SWT.NONE).setText("");
+		new Label(parent, SWT.NONE).setText("");
 		runButton = new Button(parent, SWT.PUSH);
-		runButton.setText("run");
-		command.setText("open -t /Users/glcylily/Documents/workspace/EmmaForEclipse/plugin.xml");
-		command.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		runButton.setText("runTest");
 		runButton.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false)); 
+		RunListener rl = new RunListener();
+		rl.parent = parent;
+		runButton.addListener(SWT.Selection, rl);
+	}
 
-		runButton.addListener(SWT.Selection, new Listener() {
 
-			@Override
-			public void handleEvent(Event arg0) {
-				String cmd = command.getText();
-				System.out.println(cmd);
+	private void buildSelectionRow (Composite parent, Text text, Button button) {
+		button.setText("Choose");
+		projectDirBox.setText("");
+		text.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		button.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false)); 
+		addFileChooserListener(parent, button, text);		
+	}
+
+	private void addFileChooserListener(Composite parent, Button button, Text text) {
+		FileSelectListener l = new FileSelectListener();
+		l.text = text;
+		l.shell = parent.getShell();
+		button.addListener(SWT.Selection, l);	
+	}
+
+	static void generateShellScript(String projectDir, String testDir, String emmaPath,
+			String androidDir, String antDir, String javaHomeDir) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("#!/bin/sh\n");
+		sb.append("export CLASSPATH=$CLASSPATH:" + emmaPath.trim() + "\n");
+		sb.append("export PATH=$PATH:" + androidDir.trim() + "\n");
+		sb.append("export PATH=$PATH:" + androidDir.trim() + "tools\n");
+		sb.append("cd " + projectDir + "\n");
+		sb.append("cd ..\n");
+		String projectName = projectDir.trim().substring(projectDir.trim().lastIndexOf("/") + 1);
+		sb.append("android update project -p " + projectName + "\n");
+		sb.append("cd " + testDir + "\n");
+		sb.append("android update test-project -m "+projectDir+" -p .\n");
+		sb.append("ant clean emma debug install test");	
+		try {
+			File file = new File(testDir.trim() + "src/temp.sh");
+			if (!file.exists()) file.createNewFile();
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(sb.toString());
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			System.out.println("File IO error");
+		}
+
+	}
+
+	class RunListener implements Listener{
+		Composite parent;
+		@Override
+		public void handleEvent(Event arg0) {
+
+
+	
+				//				String projectDir = projectDirBox.getText();
+				//				String testDir = testDirBox.getText();
+				//				String emmaPath = emmaBox.getText();
+				//				String androidDir = androidBox.getText();
+				//				String antDir = antBox.getText();
+				//				String javaHomeDir = javaHomeBox.getText();
+				//				
+				String projectDir = "/Users/glcylily/Documents/workspace/Snake/";
+				String testDir = "/Users/glcylily/Documents/workspace/SnakeTest/";
+				String emmaPath = "~/Downloads/android-sdk-macosx/tools/lib/emma.jar";
+				String androidDir = "~/Downloads/android-sdk-macosx/";
+				String antDir = projectDirBox.getText();
+				String javaHomeDir = "";
 				Runtime runtime = Runtime.getRuntime() ;
+				generateShellScript(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir);
+				Process pr;
 				try {
-					Process pr = runtime.exec(cmd) ;
+					pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
 					pr.waitFor() ;
 				} catch (IOException | InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
-			}
-
-		});
-		
-		browse = new Button(parent, SWT.PUSH);
-		browse.setText("browse");
-		
-		BrowserListener browserListener = new BrowserListener();
-		browserListener.parent = parent;
-		browse.addListener(SWT.Selection, browserListener);
-
-	}
-
-	private void addFileChooserListener(Composite parent, Button button, Text text) {
-
-		FileSelectListener l = new FileSelectListener();
-		l.text = text;
-		l.shell = parent.getShell();
-		button.addListener(SWT.Selection, l);
-	
-	}
-
-	
-	class BrowserListener implements Listener{
-		Composite parent;
-
-		@Override
-		public void handleEvent(Event arg0) {
-			
-			Shell s = new Shell(parent.getDisplay());
-			s.setLayout(new FillLayout());
-			Browser browser = new Browser(s, SWT.None);
-			browser.setUrl("http://www.eclipse.org/articles/Article-SWT-browser-widget/browser.html");
-			s.open();
+					
+				Shell s = new Shell(parent.getDisplay());
+				s.setLayout(new FillLayout());
+				Browser browser = new Browser(s, SWT.None);
+				browser.setUrl(testDir + "bin/coverage.html");
+				s.open();
+				
+//				ScriptRunner scriptRunner = new ScriptRunner(testDir, parent.getDisplay());
+//				scriptRunner.start();
+//				try {
+//					scriptRunner.join();
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 		}
-		
+
 	}
 	class FileSelectListener implements Listener{
 		Text text;
@@ -159,20 +222,7 @@ public class PluginView extends ViewPart {
 			for(Object o : result) {
 				text.setText(o.toString());
 			}
-		
-			//			DirectoryDialog directoryDialog = new DirectoryDialog(shell, SWT.NULL);
-//			directoryDialog.setFilterPath("/Users/glcylily/Documents/workspace/");
-//			directoryDialog.setMessage("Please select a directory and click OK");
-//			String dir = directoryDialog.open();
-//			if(dir != null) {
-//				text.setText(dir);
-//			}		
-//			Display display = shell.getDisplay();
-//			while (!shell.isDisposed()) {
-//				if (!display.readAndDispatch())
-//					display.sleep();
-//			}
-//			display.dispose();
+
 		}	
 	}
 
