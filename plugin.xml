@@ -9,7 +9,7 @@
             id="Emma">
       </category>
       <view
-            name="Sample View"
+            name="Emma For Eclipse"
             icon="icons/sample.gif"
             category="Emma"
             class="emma.views.SampleView"

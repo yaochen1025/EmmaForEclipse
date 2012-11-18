@@ -25,7 +25,7 @@ public class ScriptRunner extends Thread{
 			pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
 			pr.waitFor() ;	
 		} catch (IOException e){
-			
+			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

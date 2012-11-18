@@ -183,15 +183,15 @@ public class SampleView extends ViewPart {
 			String javaHomeDir = "";
 			Runtime runtime = Runtime.getRuntime() ;
 			generateShellScript(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir);
-			Process pr;
-			try {
-				pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
-				pr.waitFor() ;
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			Process pr;
+//			try {
+//				pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
+//				pr.waitFor() ;
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 
 			Shell s = new Shell(parent.getDisplay());
 			s.setLayout(new FillLayout());
@@ -199,14 +199,14 @@ public class SampleView extends ViewPart {
 			browser.setUrl(testDir + "bin/coverage.html");
 			s.open();
 
-			//				ScriptRunner scriptRunner = new ScriptRunner(testDir, parent.getDisplay());
-			//				scriptRunner.start();
-			//				try {
-			//					scriptRunner.join();
-			//				} catch (InterruptedException e) {
-			//					// TODO Auto-generated catch block
-			//					e.printStackTrace();
-			//				}
+			ScriptRunner scriptRunner = new ScriptRunner(testDir, parent.getDisplay());
+			scriptRunner.start();
+			try {
+				scriptRunner.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
