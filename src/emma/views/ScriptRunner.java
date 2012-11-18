@@ -1,4 +1,4 @@
-package emmaforeclipse.views;
+package emma.views;
 
 import java.io.IOException;
 
@@ -24,7 +24,9 @@ public class ScriptRunner extends Thread{
 		try {
 			pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
 			pr.waitFor() ;	
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e){
+			
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 

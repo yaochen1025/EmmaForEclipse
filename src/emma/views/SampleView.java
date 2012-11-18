@@ -1,4 +1,4 @@
-package emmaforeclipse.views;
+package emma.views;
 
 
 import java.io.BufferedWriter;
@@ -14,13 +14,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.browser.*;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 
 /**
@@ -41,7 +41,7 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
  * <p>
  */
 
-public class PluginView extends ViewPart {
+public class SampleView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -167,62 +167,58 @@ public class PluginView extends ViewPart {
 		public void handleEvent(Event arg0) {
 
 
-	
-				//				String projectDir = projectDirBox.getText();
-				//				String testDir = testDirBox.getText();
-				//				String emmaPath = emmaBox.getText();
-				//				String androidDir = androidBox.getText();
-				//				String antDir = antBox.getText();
-				//				String javaHomeDir = javaHomeBox.getText();
-				//				
-				String projectDir = "/Users/glcylily/Documents/workspace/Snake/";
-				String testDir = "/Users/glcylily/Documents/workspace/SnakeTest/";
-				String emmaPath = "~/Downloads/android-sdk-macosx/tools/lib/emma.jar";
-				String androidDir = "~/Downloads/android-sdk-macosx/";
-				String antDir = projectDirBox.getText();
-				String javaHomeDir = "";
-				Runtime runtime = Runtime.getRuntime() ;
-				generateShellScript(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir);
-				Process pr;
-				try {
-					pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
-					pr.waitFor() ;
-				} catch (IOException | InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-					
-				Shell s = new Shell(parent.getDisplay());
-				s.setLayout(new FillLayout());
-				Browser browser = new Browser(s, SWT.None);
-				browser.setUrl(testDir + "bin/coverage.html");
-				s.open();
-				
-//				ScriptRunner scriptRunner = new ScriptRunner(testDir, parent.getDisplay());
-//				scriptRunner.start();
-//				try {
-//					scriptRunner.join();
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+
+			//				String projectDir = projectDirBox.getText();
+			//				String testDir = testDirBox.getText();
+			//				String emmaPath = emmaBox.getText();
+			//				String androidDir = androidBox.getText();
+			//				String antDir = antBox.getText();
+			//				String javaHomeDir = javaHomeBox.getText();
+			//				
+			String projectDir = "/Users/glcylily/Documents/workspace/Snake/";
+			String testDir = "/Users/glcylily/Documents/workspace/SnakeTest/";
+			String emmaPath = "~/Downloads/android-sdk-macosx/tools/lib/emma.jar";
+			String androidDir = "~/Downloads/android-sdk-macosx/";
+			String antDir = projectDirBox.getText();
+			String javaHomeDir = "";
+			Runtime runtime = Runtime.getRuntime() ;
+			generateShellScript(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir);
+			Process pr;
+			try {
+				pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
+				pr.waitFor() ;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			Shell s = new Shell(parent.getDisplay());
+			s.setLayout(new FillLayout());
+			Browser browser = new Browser(s, SWT.None);
+			browser.setUrl(testDir + "bin/coverage.html");
+			s.open();
+
+			//				ScriptRunner scriptRunner = new ScriptRunner(testDir, parent.getDisplay());
+			//				scriptRunner.start();
+			//				try {
+			//					scriptRunner.join();
+			//				} catch (InterruptedException e) {
+			//					// TODO Auto-generated catch block
+			//					e.printStackTrace();
+			//				}
 		}
 
 	}
+	
 	class FileSelectListener implements Listener{
 		Text text;
 		Shell shell;
 		@Override
 		public void handleEvent(Event arg0) {		
 
-			ContainerSelectionDialog dialog = new ContainerSelectionDialog(shell, null, true, "Select a directory");
-			dialog.setTitle("Container Selection");
-			dialog.open();
-			Object[] result = dialog.getResult();
-			for(Object o : result) {
-				text.setText(o.toString());
-			}
-
+			DirectoryDialog dialog = new DirectoryDialog(shell);
+			text.setText(dialog.open());
 		}	
 	}
 
