@@ -15,6 +15,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -181,36 +182,38 @@ public class SampleView extends ViewPart {
 			String androidDir = "~/Downloads/android-sdk-macosx/";
 			String antDir = projectDirBox.getText();
 			String javaHomeDir = "";
-			Runtime runtime = Runtime.getRuntime() ;
+		//	Runtime runtime = Runtime.getRuntime() ;
 			generateShellScript(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir);
-//			Process pr;
+			//			Process pr;
+			//			try {
+			//				pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
+			//				pr.waitFor() ;
+			//			} catch (IOException e) {
+			//				e.printStackTrace();
+			//			} catch (InterruptedException e) {
+			//				e.printStackTrace();
+			//			}
+//
+//			Shell s = new Shell(parent.getDisplay());
+//			s.setLayout(new FillLayout());
+//			Browser browser = new Browser(s, SWT.None);
+//			browser.setUrl(testDir + "bin/coverage.html");
+			ScriptRunner scriptRunner = new ScriptRunner(testDir, parent.getDisplay());
+//			scriptRunner.start();		
+//			s.open();
+//
 //			try {
-//				pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
-//				pr.waitFor() ;
-//			} catch (IOException e) {
-//				e.printStackTrace();
+//				scriptRunner.join();
 //			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
-
-			Shell s = new Shell(parent.getDisplay());
-			s.setLayout(new FillLayout());
-			Browser browser = new Browser(s, SWT.None);
-			browser.setUrl(testDir + "bin/coverage.html");
-			s.open();
-
-			ScriptRunner scriptRunner = new ScriptRunner(testDir, parent.getDisplay());
-			scriptRunner.start();
-			try {
-				scriptRunner.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+			Display.getDefault().syncExec(scriptRunner);
 		}
 
 	}
-	
+
 	class FileSelectListener implements Listener{
 		Text text;
 		Shell shell;
