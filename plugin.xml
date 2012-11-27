@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Sample Action Set"
+            visible="true"
+            id="EmmaForEclipse.actionSet">
+         <menu
+               label="Emma &amp;for &amp;Eclipse"
+               id="emmaMenu">
+            <separator
+                  name="runGroup">
+            </separator>
+         </menu>
+         <action
+               label="Run Configuration"
+               class="emmaforeclipse.actions.RunConfigurationAction"
+               tooltip="configurate run arguments for Emma"
+               menubarPath="emmaMenu/runGroup"
+               id="emmaforeclipse.actions.RunConfigurationAction">
+         </action>
+         <action
+               label="Run"
+               class="emmaforeclipse.actions.RunAction"
+               tooltip="run emma"
+               menubarPath="emmaMenu/runGroup"
+               id="emmaforeclipse.actions.RunAction">
+         </action>
+      </actionSet>
+   </extension>
+   
+    <extension point="org.eclipse.ui.commands">
+      <category id="emmaforeclipse.toolbar.RunMenu" name="Run Menu"></category>
+      <command categoryId="emmaforeclipse.toolbar.RunMenu" id="emmaforeclipse.actions.RunActionToolbar.dropdown" name="DropDown">
+         <commandParameter id="com.x.sampleplugin.dropdown.msg" name="DropDown Options" optional="true"></commandParameter>
+      </command>
+      <command categoryId="emmaforeclipse.toolbar.RunMenu" id="emmaforeclipse.actions.RunActionToolbar" name="RunAction">
+         <commandParameter id="com.x.sampleplugin.dropdown.msg" name="DropDown Options" optional="true"></commandParameter>
+      </command>
+      <command categoryId="emmaforeclipse.toolbar.RunMenu" id="emmaforeclipse.actions.RunConfigurationActionToolbar" name="ConfigAction">
+         <commandParameter id="com.x.sampleplugin.dropdown.msg" name="DropDown Options" optional="true"></commandParameter>
+      </command>
+   </extension>
+   
+   <extension point="org.eclipse.ui.commandImages">
+      <image commandId="emmaforeclipse.actions.RunActionToolbar.dropdown" icon="icons/emmaIcon.png"></image>
+   </extension>
+   
+   <extension point="org.eclipse.ui.handlers">
+      <handler commandId="emmaforeclipse.actions.RunActionToolbar.dropdown" class="emmaforeclipse.actions.RunAction"></handler>
+      <handler commandId="emmaforeclipse.actions.RunActionToolbar" class="emmaforeclipse.actions.RunAction"></handler>
+      <handler commandId="emmaforeclipse.actions.RunConfigurationActionToolbar" class="emmaforeclipse.actions.RunConfigurationAction"></handler>
+   </extension>
+   
+      <!-- Dropdown Menu Options -->
+   <extension point="org.eclipse.ui.menus">
+      <!-- Toolbar Dropdown Menu -->
+      <menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar id="emmaforeclipse.toolbar">
+            <command commandId="emmaforeclipse.actions.RunActionToolbar.dropdown" id="emmaforeclipse.toolbar.command" style="pulldown" 
+                     tooltip="plugin menu option">
+            </command>
+         </toolbar>
+      </menuContribution>
+      <menuContribution locationURI="menu:emmaforeclipse.toolbar.command">
+         <!-- Dropdown Menu Options -->
+         <command commandId="emmaforeclipse.actions.RunActionToolbar" label="Run" style="push">
+            <parameter name="com.x.sampleplugin.dropdown.msg" value="Run"></parameter>
+         </command>
+         <command commandId="emmaforeclipse.actions.RunConfigurationActionToolbar" label="Run Configuration" style="push">
+            <parameter name="com.x.sampleplugin.dropdown.msg" value="Run Configuration"></parameter>
+         </command>
+      </menuContribution>
+   </extension>
+</plugin>
