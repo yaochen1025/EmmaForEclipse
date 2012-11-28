@@ -1,6 +1,10 @@
 package emmaforeclipse.actions;
 
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -65,6 +69,7 @@ public class ConfigWizardPageOne extends WizardPage {
 		FileSelectListener ls = new FileSelectListener();
 		ls.shell = parent.getShell();
 		ls.text = emmaBox;
+		ls.page =this;
 		emmaSelectButton.addListener(SWT.Selection, ls);
 
 
@@ -72,11 +77,19 @@ public class ConfigWizardPageOne extends WizardPage {
 		androidBox = new Text(parent, SWT.BORDER);
 		androidSelectButton = new Button(parent, SWT.PUSH);
 		buildSelectionRow(androidBox, androidSelectButton);
-
-
+		
+		getPathProperties();
+		
 		// Required to avoid an error in the system
 		setControl(parent);
 		setPageComplete(false);
+		
+		if (!projectDirBox.getText().isEmpty() && !testDirBox.getText().isEmpty() 
+				&& !emmaBox.getText().isEmpty() && !androidBox.getText().isEmpty()) {
+			setPageComplete(true);
+			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo) this.getNextPage();
+			pageTwo.text1.setText(testDirBox.getText());
+		}
 
 	}
 	private void buildSelectionRow (Text text, Button button) {
@@ -86,17 +99,45 @@ public class ConfigWizardPageOne extends WizardPage {
 		button.setLayoutData(new GridData(GridData.END, SWT.BEGINNING, true, false)); 
 		addDirectoryChooserListener(button, text);	
 		NextListener l = new NextListener();
+		l.page = this;
 		text.addKeyListener(l);
 	}
 
 	private void addDirectoryChooserListener(Button button, Text text) {
 		DirectorySelectListener l = new DirectorySelectListener();
+		l.page = this;
 		l.text = text;
 		l.shell = parent.getShell();
 		button.addListener(SWT.Selection, l);	
 	}
 	
+	private void getPathProperties() {
+		Properties prop = new Properties();
+    	 
+    	try {
+               //load a properties file
+
+    		prop.load(new FileInputStream("config.properties"));
+ 
+            String projectDirectory = prop.getProperty("PROJECT");
+            this.projectDirBox.setText(projectDirectory == null? "" : projectDirectory);
+            
+            String testProjectDirectory = prop.getProperty("TESTPROJECT");
+            this.testDirBox.setText(testProjectDirectory == null? "" : testProjectDirectory);
+            
+            String emmaDirectory = prop.getProperty("EMMA");
+            this.emmaBox.setText(emmaDirectory == null? "" : emmaDirectory);
+            
+            String androidDirectory = prop.getProperty("ANDROID_SDK");
+            this.androidBox.setText(androidDirectory == null? "" : androidDirectory);
+            
+    	} catch (IOException ex) {
+    		ex.printStackTrace();
+        }
+	}
+	
 	class NextListener implements KeyListener{
+		ConfigWizardPageOne page;
 		@Override
 		public void keyPressed(KeyEvent arg0) {
 			// TODO Auto-generated method stub
@@ -109,12 +150,15 @@ public class ConfigWizardPageOne extends WizardPage {
 				return;
 			}
 			setPageComplete(true);
+			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
+			pageTwo.text1.setText(testDirBox.getText());
 		}
 	}
 
 	class DirectorySelectListener implements Listener{
 		Text text;
 		Shell shell;
+		ConfigWizardPageOne page;
 
 		@Override
 		public void handleEvent(Event arg0) {		
@@ -125,6 +169,10 @@ public class ConfigWizardPageOne extends WizardPage {
 				return;
 			}
 			setPageComplete(true);
+			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
+			pageTwo.text1.setText(testDirBox.getText());
+					
+			
 		}	
 	}
 
@@ -132,6 +180,7 @@ public class ConfigWizardPageOne extends WizardPage {
 	class FileSelectListener implements Listener{
 		Text text;
 		Shell shell;
+		ConfigWizardPageOne page;
 		@Override
 		public void handleEvent(Event arg0) {
 			FileDialog dialog = new FileDialog(shell);
@@ -141,6 +190,9 @@ public class ConfigWizardPageOne extends WizardPage {
 				return;
 			}
 			setPageComplete(true);
+			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
+			pageTwo.text1.setText(testDirBox.getText());
+					
 		}
 
 	}

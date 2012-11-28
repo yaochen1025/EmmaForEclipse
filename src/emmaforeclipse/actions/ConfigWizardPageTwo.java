@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Text;
 
 
 public class ConfigWizardPageTwo extends WizardPage {
-	 private Text text1;
+	 public Text text1;
 	  private Composite container;
 
 	  public ConfigWizardPageTwo() {
