@@ -46,7 +46,7 @@
    </extension>
    
    <extension point="org.eclipse.ui.commandImages">
-      <image commandId="emmaforeclipse.actions.RunActionToolbar.dropdown" icon="icons/emmaIcon.png"></image>
+      <image commandId="emmaforeclipse.actions.RunActionToolbar.dropdown" icon="icons/emma.png"></image>
    </extension>
    
    <extension point="org.eclipse.ui.handlers">

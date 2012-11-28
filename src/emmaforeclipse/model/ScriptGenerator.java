@@ -20,4 +20,5 @@ public abstract class ScriptGenerator {
     
     public abstract void createShellScriptFile();
     public abstract String generateShellScriptString(); 
+    public  abstract void setConfig();
 }

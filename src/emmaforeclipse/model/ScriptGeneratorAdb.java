@@ -59,4 +59,10 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
         sb.append("java -cp " + emmaPath + " emma report -r html -in coverage.ec,coverage.em -sp " + projectDir + "src/\n");
         return sb.toString();
     }
+
+	@Override
+	public void setConfig() {
+		// TODO Auto-generated method stub
+		
+	}
 }

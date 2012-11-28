@@ -57,7 +57,7 @@ public class ConfigWizard extends Wizard {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		ScriptGeneratorAnt scriptGenerator = new ScriptGeneratorAnt(projectDir, testDir, emmaPath, androidDir,
+		ScriptGenerator scriptGenerator = new ScriptGeneratorAnt(projectDir, testDir, emmaPath, androidDir,
 				"", "");
 		scriptGenerator.setConfig();
 		return true;

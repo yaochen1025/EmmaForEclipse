@@ -1,5 +1,9 @@
 package emmaforeclipse.actions;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -83,9 +87,20 @@ public class RunAction extends AbstractHandler implements IWorkbenchWindowAction
 	}
 	
 	private void performAction() {
-		MessageDialog.openInformation(
-				window.getShell(),
-				"EmmaForEclipse",
-				"This is Run");
+		Properties prop = new Properties();
+   	 
+    	try {
+    		prop.load(new FileInputStream("run.properties"));
+            String script = prop.getProperty("NEXTRUN");
+    		MessageDialog.openInformation(
+    				window.getShell(),
+    				"EmmaForEclipse",
+    				script);
+     
+            
+    	} catch (IOException ex) {
+    		ex.printStackTrace();
+        }
+
 	}
 }

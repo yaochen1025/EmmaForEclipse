@@ -88,7 +88,7 @@ public class ConfigWizardPageOne extends WizardPage {
 				&& !emmaBox.getText().isEmpty() && !androidBox.getText().isEmpty()) {
 			setPageComplete(true);
 			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo) this.getNextPage();
-			//pageTwo.text1.setText(testDirBox.getText());
+			pageTwo.testDirSelected = testDirBox.getText();
 			
 		}
 
@@ -152,7 +152,7 @@ public class ConfigWizardPageOne extends WizardPage {
 			}
 			setPageComplete(true);
 			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-			pageTwo.text1.setText(testDirBox.getText());
+			pageTwo.testDirSelected = testDirBox.getText();
 		}
 	}
 
@@ -171,7 +171,7 @@ public class ConfigWizardPageOne extends WizardPage {
 			}
 			setPageComplete(true);
 			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-			pageTwo.text1.setText(testDirBox.getText());
+			pageTwo.testDirSelected = testDirBox.getText();
 					
 			
 		}	
@@ -192,7 +192,7 @@ public class ConfigWizardPageOne extends WizardPage {
 			}
 			setPageComplete(true);
 			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-			pageTwo.text1.setText(testDirBox.getText());
+			pageTwo.testDirSelected = testDirBox.getText();
 					
 		}
 

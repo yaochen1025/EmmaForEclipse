@@ -49,11 +49,14 @@ public class ScriptGeneratorAnt extends ScriptGenerator{
 		return sb.toString();
 	}
 
+	@Override
 	public void setConfig() {
 		Properties prop = new Properties();
 
 		try {
 			//load a properties file
+//			File file = new File("run.properties");
+//			if(!file.exists()) file.createNewFile();
 			prop.load(new FileInputStream("run.properties"));
 			prop.setProperty("NEXTRUN", this.generateShellScriptString() );
 			FileOutputStream f = new FileOutputStream("run.properties");
