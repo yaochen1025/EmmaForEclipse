@@ -88,7 +88,8 @@ public class ConfigWizardPageOne extends WizardPage {
 				&& !emmaBox.getText().isEmpty() && !androidBox.getText().isEmpty()) {
 			setPageComplete(true);
 			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo) this.getNextPage();
-			pageTwo.text1.setText(testDirBox.getText());
+			//pageTwo.text1.setText(testDirBox.getText());
+			
 		}
 
 	}
