@@ -1,6 +1,10 @@
 package emmaforeclipse.actions;
 
+import java.io.BufferedWriter;
+
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -18,6 +22,8 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
+
+import emmaforeclipse.model.*;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -92,15 +98,31 @@ public class RunAction extends AbstractHandler implements IWorkbenchWindowAction
     	try {
     		prop.load(new FileInputStream("run.properties"));
             String script = prop.getProperty("NEXTRUN");
-    		MessageDialog.openInformation(
-    				window.getShell(),
-    				"EmmaForEclipse",
-    				script);
-     
-            
+            String testDir = prop.getProperty("SCRIPTCONTAINER");
+            System.out.println(script + "\n" + testDir);
+            createShellScriptFile(script, testDir);
+            ScriptRunner scriptRunner = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "src/scriptOutput.txt");
+            scriptRunner.run();
     	} catch (IOException ex) {
     		ex.printStackTrace();
         }
 
+	}
+	
+	public void createShellScriptFile(String shellScript, String testDir) {
+
+		try {
+			File file = new File(testDir + "src/temp.sh");
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(shellScript);
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
