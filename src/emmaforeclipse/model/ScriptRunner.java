@@ -2,24 +2,30 @@ package emmaforeclipse.model;
 
 import java.io.*;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IProgressService;
 
-public class ScriptRunner extends Thread{
+public class ScriptRunner extends Job{
 	private Display display;
 	private String testDir;
 	private String outputFile;
 
 	public ScriptRunner(String testDir, Display display, String outputFile) {
+		super("run script");
 		this.display = display;
 		this.testDir = testDir;
 		this.outputFile = outputFile;
 	}
 	
-	@Override
 	public void run() {
 		 
 		Runtime runtime = Runtime.getRuntime() ;
@@ -40,6 +46,7 @@ public class ScriptRunner extends Thread{
 		}
 
 
+	
 		Shell s = new Shell(display);
 		s.setLayout(new FillLayout());
 		Browser browser = new Browser(s, SWT.None);
@@ -56,6 +63,12 @@ public class ScriptRunner extends Thread{
 	        outputStream.write(buf, 0, len);
 	    }
 	    outputStream.close();
+	}
+
+	@Override
+	protected IStatus run(IProgressMonitor arg0) {
+		run();
+		return Status.OK_STATUS;
 	}
 
 }
