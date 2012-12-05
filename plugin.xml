@@ -61,7 +61,7 @@
       <menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar id="emmaforeclipse.toolbar">
             <command commandId="emmaforeclipse.actions.RunActionToolbar.dropdown" id="emmaforeclipse.toolbar.command" style="pulldown" 
-                     tooltip="plugin menu option">
+                     tooltip="Emma For Eclipse">
             </command>
          </toolbar>
       </menuContribution>

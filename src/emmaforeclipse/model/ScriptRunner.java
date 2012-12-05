@@ -11,10 +11,8 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.IProgressService;
 
-public class ScriptRunner extends Job{
+public class ScriptRunner extends Job implements Runnable{
 	private Display display;
 	private String testDir;
 	private String outputFile;
@@ -26,6 +24,7 @@ public class ScriptRunner extends Job{
 		this.outputFile = outputFile;
 	}
 	
+	@Override
 	public void run() {
 		 
 		Runtime runtime = Runtime.getRuntime() ;

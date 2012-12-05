@@ -15,6 +15,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
@@ -103,11 +104,12 @@ public class RunAction extends AbstractHandler implements IWorkbenchWindowAction
             System.out.println(script + "\n" + testDir);
             createShellScriptFile(script, testDir);
             ScriptRunner scriptRunner = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "src/scriptOutput.txt");
-            scriptRunner.run();
+          //  scriptRunner.run();
 //            scriptRunner.setPriority(Job.SHORT);
 //            scriptRunner.setUser(true);
 //            scriptRunner.schedule(); // start as soon as possible
 
+           Display.getDefault().asyncExec(scriptRunner);
           
     	} catch (IOException ex) {
     		ex.printStackTrace();
