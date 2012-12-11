@@ -1,31 +1,22 @@
 package emmaforeclipse.actions;
 
 import java.io.BufferedWriter;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.eclipse.jface.action.IAction;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.jface.dialogs.MessageDialog;
 
-import emmaforeclipse.model.*;
+import emmaforeclipse.model.ScriptRunner;
 
 /**
  * Our sample action implements workbench action delegate.
@@ -36,6 +27,7 @@ import emmaforeclipse.model.*;
  * @see IWorkbenchWindowActionDelegate
  */
 public class RunAction extends AbstractHandler implements IWorkbenchWindowActionDelegate {
+
 	private IWorkbenchWindow window;
 	/**
 	 * The constructor.
@@ -93,30 +85,38 @@ public class RunAction extends AbstractHandler implements IWorkbenchWindowAction
 		performAction();
 		return null;
 	}
-	
+
 	private void performAction() {
 		Properties prop = new Properties();
-   	 
-    	try {
-    		prop.load(new FileInputStream("run.properties"));
-            String script = prop.getProperty("NEXTRUN");
-            String testDir = prop.getProperty("SCRIPTCONTAINER");
-            System.out.println(script + "\n" + testDir);
-            createShellScriptFile(script, testDir);
-            ScriptRunner scriptRunner = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "src/scriptOutput.txt");
-          //  scriptRunner.run();
-//            scriptRunner.setPriority(Job.SHORT);
-//            scriptRunner.setUser(true);
-//            scriptRunner.schedule(); // start as soon as possible
 
-           Display.getDefault().asyncExec(scriptRunner);
-          
-    	} catch (IOException ex) {
-    		ex.printStackTrace();
-        }
+		try {
+			prop.load(new FileInputStream("run.properties"));
+			String script = prop.getProperty("NEXTRUN");
+			String testDir = prop.getProperty("SCRIPTCONTAINER");
+			System.out.println(script + "\n" + testDir);
+			createShellScriptFile(script, testDir);
+			//ScriptRunner scriptRunner = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "src/scriptOutput.txt");
+			//  scriptRunner.run();
+			//            scriptRunner.setPriority(Job.SHORT);
+			//            scriptRunner.setUser(true);
+			//            scriptRunner.schedule(); // start as soon as possible
+
+			//           Display.getDefault().asyncExec(scriptRunner);
+
+
+
+			ScriptRunner job = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "src/scriptOutput.txt");
+			job.setUser(true);
+			//job.schedule(); // start as soon as possible
+			job.run();
+
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 
 	}
-	
+
 	public void createShellScriptFile(String shellScript, String testDir) {
 
 		try {

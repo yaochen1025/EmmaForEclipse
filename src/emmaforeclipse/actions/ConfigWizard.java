@@ -11,22 +11,30 @@ import emmaforeclipse.model.*;
 
 public class ConfigWizard extends Wizard {
 
+	protected WizardPageWelcome zero;
 	protected ConfigWizardPageOne one;
 	protected ConfigWizardPageTwo two;
+	protected ConfigWizardPageThree three;
 
-	public  ConfigWizard() {
+	public ConfigWizard() {
 		super();
+		setWindowTitle("Emma For Eclipse"); 
 		setNeedsProgressMonitor(true);
 	}
+	
+	
 
 	@Override
 	public void addPages() {
+		zero = new WizardPageWelcome();
 		one = new ConfigWizardPageOne();
 		two = new ConfigWizardPageTwo();
+		addPage(zero);
 		addPage(one);
 		addPage(two);
-
 	}
+	
+
 
 	@Override
 	public boolean performFinish() {

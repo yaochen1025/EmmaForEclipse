@@ -24,16 +24,31 @@ import org.eclipse.swt.widgets.Text;
 public class ConfigWizardPageOne extends WizardPage {
 	
 	private Composite parent;
+	
 	Text projectDirBox;
 	Text testDirBox;
-	Text emmaBox;
 	Text androidBox;
+	Text emmaBox;
 
-	Button projectDirSelectButton;
-	Button testDirSelectButton;
-	Button emmaSelectButton;
-	Button androidSelectButton;
-	Button runButton;	
+	public String getProjectDir() {
+		return this.projectDirBox.getText();
+	}
+	
+	public String getTestDir() {
+		return this.testDirBox.getText();
+	}
+	
+	public String getEmmaJar() {
+		return this.emmaBox.getText();
+	}
+	public String getAndroidPah() {
+		return this.androidBox.getText();
+	}
+
+	private Button projectDirSelectButton;
+	private Button testDirSelectButton;
+	private Button androidSelectButton;
+	private Button emmaSelectButton;
 
 	public ConfigWizardPageOne() {
 		super("Environment Setting");
@@ -47,7 +62,7 @@ public class ConfigWizardPageOne extends WizardPage {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		parent.setLayout(layout);
-
+		
 		new Label(parent, SWT.NONE).setText("Project Directory");
 		projectDirBox = new Text(parent, SWT.BORDER);
 		projectDirSelectButton = new Button(parent, SWT.PUSH);
@@ -58,7 +73,11 @@ public class ConfigWizardPageOne extends WizardPage {
 		testDirSelectButton = new Button(parent, SWT.PUSH);
 		buildSelectionRow(testDirBox , testDirSelectButton);
 
-
+		new Label(parent, SWT.NONE).setText("Android Directory");
+		androidBox = new Text(parent, SWT.BORDER);
+		androidSelectButton = new Button(parent, SWT.PUSH);
+		buildSelectionRow(androidBox, androidSelectButton);
+		
 		new Label(parent, SWT.NONE).setText("Emma Path");
 		emmaBox = new Text(parent, SWT.BORDER);
 		emmaSelectButton = new Button(parent, SWT.PUSH);
@@ -71,12 +90,6 @@ public class ConfigWizardPageOne extends WizardPage {
 		ls.text = emmaBox;
 		ls.page =this;
 		emmaSelectButton.addListener(SWT.Selection, ls);
-
-
-		new Label(parent, SWT.NONE).setText("Android Directory");
-		androidBox = new Text(parent, SWT.BORDER);
-		androidSelectButton = new Button(parent, SWT.PUSH);
-		buildSelectionRow(androidBox, androidSelectButton);
 		
 		getPathProperties();
 		
@@ -93,6 +106,7 @@ public class ConfigWizardPageOne extends WizardPage {
 		}
 
 	}
+	
 	private void buildSelectionRow (Text text, Button button) {
 		button.setText("Choose");
 		text.setText("");
@@ -162,7 +176,9 @@ public class ConfigWizardPageOne extends WizardPage {
 		ConfigWizardPageOne page;
 
 		@Override
-		public void handleEvent(Event arg0) {		
+		public void handleEvent(Event arg0) {
+			
+			
 			DirectoryDialog dialog = new DirectoryDialog(shell);
 			text.setText(dialog.open());
 			if (projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
@@ -198,18 +214,4 @@ public class ConfigWizardPageOne extends WizardPage {
 
 	}
 	
-	public String getProjectDir() {
-		return this.projectDirBox.getText();
-	}
-	
-	public String getTestDir() {
-		return this.testDirBox.getText();
-	}
-	
-	public String getEmmaJar() {
-		return this.emmaBox.getText();
-	}
-	public String getAndroidPah() {
-		return this.androidBox.getText();
-	}
 }
