@@ -110,7 +110,7 @@ public class RunAction extends AbstractHandler implements IWorkbenchWindowAction
 
 
 
-			ScriptRunner job = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "src/scriptOutput.txt");
+			ScriptRunner job = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "report/scriptLog.txt");
 			job.setUser(true);
 			//job.schedule(); // start as soon as possible
 			job.run();
