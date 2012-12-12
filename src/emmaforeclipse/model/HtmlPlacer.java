@@ -12,24 +12,33 @@ import emmaforeclipse.actions.ConfigWizardPageOne;
 
 public class HtmlPlacer {
 
-    //	public static void main(String[] args){
-    //		String s = "/Users/sheng/Desktop";
-    //		HtmlPlacer h = new HtmlPlacer(s);
-    //		boolean b = h.finishUp();
-    //		System.out.println(b);
-    //		if (b) {
-    //			h.updateIndexHtml();
-    //		}
-    //	}
+    	public static void main(String[] args){
+    		String s = "/home/ccfish/workspace/TestAndroidHelloWorld/";
+    		HtmlPlacer.runNumber = "Wed-Dec-12-03:46:16-EST-2012";
+    		HtmlPlacer h = new HtmlPlacer(s);
+//    		boolean b = h.finishUp();
+//    		System.out.println(b);
+//    		if (b) {
+    			h.updateIndexHtml();
+//    		}
+    	}
 
     private static final String header = "<HTML><HEAD><META CONTENT=\"text/html; charset=UTF-8\" HTTP-EQUIV=\"Content-Type\"/><TITLE>EMMA Coverage Report (generated Wed Dec 05 11:56:48 EST 2012)</TITLE><STYLE TYPE=\"text/css\"> TABLE,TD,TH {border-style:solid; border-color:black;} TD,TH {background:white;margin:0;line-height:100%;padding-left:0.5em;padding-right:0.5em;} TD {border-width:0 1px 0 0;} TH {border-width:1px 1px 1px 0;} TR TD.h {color:red;} TABLE {border-spacing:0; border-collapse:collapse;border-width:0 0 1px 1px;} P,H1,H2,H3,TH {font-family:verdana,arial,sans-serif;font-size:10pt;} TD {font-family:courier,monospace;font-size:10pt;} TABLE.hdft {border-spacing:0;border-collapse:collapse;border-style:none;} TABLE.hdft TH,TABLE.hdft TD {border-style:none;line-height:normal;} TABLE.hdft TH.tl,TABLE.hdft TD.tl {background:#6699CC;color:white;} TABLE.hdft TD.nv {background:#6633DD;color:white;} .nv A:link {color:white;} .nv A:visited {color:white;} .nv A:active {color:yellow;} TABLE.hdft A:link {color:white;} TABLE.hdft A:visited {color:white;} TABLE.hdft A:active {color:yellow;} .in {color:#356085;} TABLE.s TD {padding-left:0.25em;padding-right:0.25em;} TABLE.s TD.l {padding-left:0.25em;padding-right:0.25em;text-align:right;background:#F0F0F0;} TABLE.s TR.z TD {background:#FF9999;} TABLE.s TR.p TD {background:#FFFF88;} TABLE.s TR.c TD {background:#CCFFCC;} A:link {color:#0000EE;text-decoration:none;} A:visited {color:#0000EE;text-decoration:none;} A:hover {color:#0000EE;text-decoration:underline;} TABLE.cn {border-width:0 0 1px 0;} TABLE.s {border-width:1px 0 1px 1px;} TD.h {color:red;border-width:0 1px 0 0;} TD.f {border-width:0 1px 0 1px;} TD.hf {color:red;border-width:0 1px 0 1px;} TH.f {border-width:1px 1px 1px 1px;} TR.cis TD {background:#F0F0F0;} TR.cis TD {border-width:1px 1px 1px 0;} TR.cis TD.h {color:red;border-width:1px 1px 1px 0;} TR.cis TD.f {border-width:1px 1px 1px 1px;} TR.cis TD.hf {color:red;border-width:1px 1px 1px 1px;} TD.b {border-style:none;background:transparent;line-height:50%;}  TD.bt {border-width:1px 0 0 0;background:transparent;line-height:50%;} TR.o TD {background:#F0F0F0;}TABLE.it {border-style:none;}TABLE.it TD,TABLE.it TH {border-style:none;}</STYLE></HEAD><BODY>";
 
 
     public void updateIndexHtml() {
+        
+        System.out.println("xxxxxxxxxxx" + testProjectDir);
 
         String indexFileDir = testProjectDir + "report/index.html";
         String srcFileDir;
+<<<<<<< HEAD
         if (ConfigWizardPageOne.isAdb) {
+=======
+        if (!ConfigWizardPageOne.isAdb) {
+            srcFileDir = testProjectDir + "report/" + runNumber +"/coverage.html";
+        } else {
+>>>>>>> 5e3c5c11a23263ba80201b83e5c6f8cca38e2e8a
             srcFileDir = testProjectDir + "report/" + runNumber +"/index.html";
         } else {
             srcFileDir = testProjectDir + "report/" + runNumber +"/coverage.html";
@@ -38,8 +47,9 @@ public class HtmlPlacer {
         try {
             System.out.println(srcFileDir);
             String newCoverageFile = readFile(srcFileDir);
-
+            System.out.println(indexFileDir);
             File indexFile = new File(indexFileDir); 
+            
             if (!indexFile.exists()) {
                 indexFile.createNewFile();
                 PrintWriter pw = new PrintWriter(indexFile);
@@ -108,11 +118,11 @@ public class HtmlPlacer {
     private String testProjectDir;
     public static String runNumber;
 
-    public HtmlPlacer(String testProjectDirectory) {
-        if (testProjectDirectory.endsWith("/")) {
-            this.testProjectDir = testProjectDirectory;
+    public HtmlPlacer(String testProjectDirectory1) {
+        if (testProjectDirectory1.endsWith("/")) {
+            this.testProjectDir = testProjectDirectory1;
         } else {
-            this.testProjectDir = testProjectDirectory + "/";
+            this.testProjectDir = testProjectDirectory1 + "/";
         }
     }
 

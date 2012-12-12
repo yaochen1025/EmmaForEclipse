@@ -57,17 +57,18 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
     @Override
     public void createShellScriptFile() {
         String shellScript = generateShellScriptString();
-        try {
-            File file = new File(testDir + "src/temp.sh");
-            if (!file.exists()) file.createNewFile();
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(shellScript);
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            System.out.println("File IO error");
-        }
+        ScriptGenerator.scriptSaved = shellScript;
+//        try {
+//            File file = new File(testDir + "src/temp.sh");
+//            if (!file.exists()) file.createNewFile();
+//            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+//            BufferedWriter bw = new BufferedWriter(fw);
+//            bw.write(shellScript);
+//            bw.flush();
+//            bw.close();
+//        } catch (IOException e) {
+//            System.out.println("File IO error");
+//        }
     }
 
     @Override
@@ -126,8 +127,9 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
 	            //load a properties file
 //	          File file = new File("run.properties");
 //	          if(!file.exists()) file.createNewFile();
-	            prop.load(new FileInputStream("run.properties"));
+	            prop.load(new FileInputStream("/home/ccfish/workspace/EmmaForEclipse/run.properties"));
 	            String script = this.generateShellScriptString();
+	            ScriptGenerator.scriptSaved = script;
 	            prop.setProperty("NEXTRUN", script);
 	            System.out.println(script);
 	            prop.setProperty("SCRIPTCONTAINER", this.testDir);
