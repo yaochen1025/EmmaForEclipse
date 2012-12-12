@@ -30,9 +30,9 @@ public class HtmlPlacer {
         String indexFileDir = testProjectDir + "report/index.html";
         String srcFileDir;
         if (ConfigWizardPageOne.isAdb) {
-            srcFileDir = testProjectDir + "report/" + runNumber +"/coverage.html";
-        } else {
             srcFileDir = testProjectDir + "report/" + runNumber +"/index.html";
+        } else {
+            srcFileDir = testProjectDir + "report/" + runNumber +"/coverage.html";
         }
 
         try {
@@ -47,7 +47,6 @@ public class HtmlPlacer {
                 pw.write(temp);
                 pw.flush();
                 pw.close();
-
             } else {
 
                 String indexFileString = readFile(indexFile);

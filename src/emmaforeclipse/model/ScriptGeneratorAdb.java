@@ -110,7 +110,8 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
         sb.append("java -cp " + emmaPath + " emma report -r html -in coverage.ec,coverage.em -sp " + projectDir + "src/\n");
         
         String dest = createFolder();
-        sb.append("mv coverage/index.html " + dest + "\n");
+        System.out.println(dest);
+        sb.append("cp coverage/index.html " + dest + "\n");
         sb.append("cp -r coverage/_files " + dest + "\n");
 
         
