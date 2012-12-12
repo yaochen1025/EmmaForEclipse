@@ -169,7 +169,7 @@ public class ConfigWizardPageOne extends WizardPage {
 					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
 				return;
 			}
-			
+			System.out.println(testDirBox.getText());
 			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
 			wizard.addPage(nextPage);
 			setPageComplete(true);
@@ -178,7 +178,7 @@ public class ConfigWizardPageOne extends WizardPage {
 		}
 	}
 
-	class DirectorySelectListener implements Listener{
+	class DirectorySelectListener1 implements Listener{
 		Text text;
 		Shell shell;
 		ConfigWizardPageOne page;
@@ -193,6 +193,7 @@ public class ConfigWizardPageOne extends WizardPage {
 					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
 				return;
 			}
+			System.out.println(testDirBox.getText() + "herererere");
 			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
 			wizard.addPage(nextPage);
 			setPageComplete(true);
@@ -202,6 +203,35 @@ public class ConfigWizardPageOne extends WizardPage {
 			
 		}	
 	}
+	
+	class DirectorySelectListener implements Listener{
+		Text text;
+		Shell shell;
+		ConfigWizardPageOne page;
+
+		@Override
+		public void handleEvent(Event arg0) {
+			
+			
+			DirectoryDialog dialog = new DirectoryDialog(shell);
+			String s = dialog.open();
+			System.out.println(s);
+			text.setText(s);
+			if (projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
+					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
+				return;
+			}
+			System.out.println(testDirBox.getText() + "herererere");
+			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
+			wizard.addPage(nextPage);
+			setPageComplete(true);
+//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
+//			pageTwo.testDirSelected = testDirBox.getText();
+					
+			
+		}	
+	}
+
 
 
 	class FileSelectListener implements Listener{
