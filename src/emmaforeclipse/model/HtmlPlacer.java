@@ -50,7 +50,7 @@ public class HtmlPlacer {
 				pw.write(header);
 				String temp = changePathForHref(coverageStatsNeeded);
 				pw.write(temp);
-				pw.write("<div style='height=20px;'></div>");
+				pw.write("<div style='height:20px;'></div>");
 				pw.write(indexFileString.substring(start));
 				pw.flush();
 				pw.close();
@@ -89,6 +89,7 @@ public class HtmlPlacer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(sb.toString());
 		return sb.toString();
 	}
 
