@@ -17,6 +17,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import emmaforeclipse.model.ScriptGenerator;
 import emmaforeclipse.model.ScriptRunner;
 
 /**
@@ -91,14 +92,18 @@ public class RunAction extends AbstractHandler implements IWorkbenchWindowAction
 		Properties prop = new Properties();
 
 		try {
-			prop.load(new FileInputStream("run.properties"));
-			String script = prop.getProperty("NEXTRUN");
-			String testDir = prop.getProperty("SCRIPTCONTAINER");
-			System.out.println(script + "\n" + testDir);
-			if (script == null) {
-				WizardDialog wizardDialog = new WizardDialog(window.getShell(), new  ConfigWizard());
-				wizardDialog.open();
-			}
+//			prop.load(new FileInputStream("/home/ccfish/workspace/EmmaForEclipse/run.properties"));
+//			String script = prop.getProperty("NEXTRUN");
+//			String testDir = prop.getProperty("SCRIPTCONTAINER");
+//			System.out.println(script + "\n" + testDir);
+//			if (script == null) {
+//				WizardDialog wizardDialog = new WizardDialog(window.getShell(), new  ConfigWizard());
+//				wizardDialog.open();
+//			}
+		    String script = ScriptGenerator.scriptSaved;
+		    String testDir = ScriptGenerator.testDirSaved;
+		    System.out.println("script: " + script);
+		    System.out.println("testDir: " + testDir);
 			createShellScriptFile(script, testDir);
 			//ScriptRunner scriptRunner = new ScriptRunner(testDir, window.getShell().getDisplay(), testDir + "src/scriptOutput.txt");
 			//  scriptRunner.run();
@@ -116,7 +121,7 @@ public class RunAction extends AbstractHandler implements IWorkbenchWindowAction
 			job.run();
 			
 
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 

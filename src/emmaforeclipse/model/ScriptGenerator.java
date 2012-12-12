@@ -5,6 +5,9 @@ import java.util.Date;
 
 public abstract class ScriptGenerator {
     
+    public static String scriptSaved;
+    public static String testDirSaved;
+    
 	protected String projectDir;
     protected String testDir;
     protected String emmaPath;
@@ -16,6 +19,7 @@ public abstract class ScriptGenerator {
             String androidDir, String antDir, String javaHomeDir) {
         this.projectDir = projectDir.trim();
         this.testDir = testDir.trim();
+        testDirSaved = this.testDir;
         this.emmaPath = emmaPath.trim();
         this.androidDir = androidDir.trim();
         this.antDir = antDir.trim();
@@ -31,9 +35,10 @@ public abstract class ScriptGenerator {
         String runNumber = new Date().toString();
         String replaced = runNumber.replaceAll(" ", "-");
         String dest = reportFolderDir + replaced;
-        HtmlPlacer.runNumber = dest;
+        HtmlPlacer.runNumber = replaced;
         File coverageFolder = new File(dest);
         coverageFolder.mkdir();
+        System.out.println("afwaeew\t" + dest);
         return dest;
     }
     
