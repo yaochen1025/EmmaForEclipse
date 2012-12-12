@@ -46,7 +46,7 @@ public class ScriptRunner extends Job implements Runnable {
 		}
 
 		HtmlPlacer hp = new HtmlPlacer(testDir.trim());
-		hp.updateIndexHtml();
+		hp.doSomething();
 		
 		
 //		final Shell shell = new Shell(display);		

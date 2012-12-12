@@ -110,10 +110,10 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
         sb.append("adb pull /data/data/" + projectPackageName + "/files/coverage.ec .\n");
         sb.append("java -cp " + emmaPath + " emma report -r html -in coverage.ec,coverage.em -sp " + projectDir + "src/\n");
         
-        String dest = createFolder();
-        System.out.println(dest);
-        sb.append("cp coverage/index.html " + dest + "\n");
-        sb.append("cp -r coverage/_files " + dest + "\n");
+//        String dest = createFolder();
+//        System.out.println(dest);
+//        sb.append("cp coverage/index.html " + dest + "\n");
+//        sb.append("cp -r coverage/_files " + dest + "\n");
 
         
         return sb.toString();

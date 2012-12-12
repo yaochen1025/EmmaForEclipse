@@ -48,11 +48,11 @@ public class ScriptGeneratorAnt extends ScriptGenerator{
         sb.append("cd " + testDir + "\n");
         sb.append("android update test-project -m "+projectDir+" -p .\n");
         sb.append("ant clean emma debug install test\n");
-        String dest = createFolder();
-        sb.append("cp bin/coverage.html " + dest + "\n");
-        sb.append("cp bin/coverage.xml " + dest + "\n");
-        sb.append("cp bin/coverage.txt " + dest + "\n");
-        sb.append("cp -r bin/_files " + dest + "\n");
+//        String dest = createFolder();
+//        sb.append("cp bin/coverage.html " + dest + "\n");
+//        sb.append("cp bin/coverage.xml " + dest + "\n");
+//        sb.append("cp bin/coverage.txt " + dest + "\n");
+//        sb.append("cp -r bin/_files " + dest + "\n");
         return sb.toString();
     }
 

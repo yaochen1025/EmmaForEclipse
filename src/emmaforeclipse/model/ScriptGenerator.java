@@ -26,21 +26,21 @@ public abstract class ScriptGenerator {
         this.javaHomeDir = javaHomeDir.trim();
     }
     
-    protected String createFolder() {
-        String reportFolderDir = this.testDir + "report/";
-        File reportFolder = new File(reportFolderDir);  
-        if (!reportFolder.exists()) {
-            reportFolder.mkdir();
-        }
-        String runNumber = new Date().toString();
-        String replaced = runNumber.replaceAll(" ", "-");
-        String dest = reportFolderDir + replaced;
-        HtmlPlacer.runNumber = replaced;
-        File coverageFolder = new File(dest);
-        coverageFolder.mkdir();
-        System.out.println("afwaeew\t" + dest);
-        return dest;
-    }
+//    protected String createFolder() {
+//        String reportFolderDir = this.testDir + "report/";
+//        File reportFolder = new File(reportFolderDir);  
+//        if (!reportFolder.exists()) {
+//            reportFolder.mkdir();
+//        }
+//        String runNumber = new Date().toString();
+//        String replaced = runNumber.replaceAll(" ", "_");
+//        String dest = reportFolderDir + replaced;
+//        HtmlPlacer.runNumber = replaced;
+//        File coverageFolder = new File(dest);
+//        coverageFolder.mkdir();
+//        System.out.println("afwaeew\t" + dest);
+//        return dest;
+//    }
     
     public abstract void createShellScriptFile();
     public abstract String generateShellScriptString(); 
