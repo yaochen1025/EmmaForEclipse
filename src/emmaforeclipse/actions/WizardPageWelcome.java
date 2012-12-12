@@ -31,5 +31,12 @@ public class WizardPageWelcome extends WizardPage {
 
 		// Required to avoid an error in the system
 		setControl(container);
+		this.setPageComplete(false);
+		
+	}
+	
+	@Override
+	public boolean canFlipToNextPage() {
+		return true;
 	}
 }

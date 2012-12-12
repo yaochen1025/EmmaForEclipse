@@ -10,6 +10,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -23,7 +25,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class ConfigWizardPageOne extends WizardPage {
-	
+
 	private Composite parent;
 	Text projectDirBox;
 	Text testDirBox;
@@ -31,19 +33,23 @@ public class ConfigWizardPageOne extends WizardPage {
 	Text emmaBox;
 	ConfigWizard wizard;
 	ConfigWizardPageTwo nextPage;
+	Button runUseAnt;
+	Button runUseAdb;
+	boolean methodChosen = false;
+	public static boolean isAdb = false;
 
 	public String getProjectDir() {
 		return this.projectDirBox.getText();
 	}
-	
+
 	public String getTestDir() {
 		return this.testDirBox.getText();
 	}
-	
-	public String getEmmaJar() {
+
+	public String getEmmaPath() {
 		return this.emmaBox.getText();
 	}
-	public String getAndroidPah() {
+	public String getAndroidPath() {
 		return this.androidBox.getText();
 	}
 
@@ -62,10 +68,65 @@ public class ConfigWizardPageOne extends WizardPage {
 	public void createControl(Composite parentC) {
 		wizard = (ConfigWizard) this.getWizard();
 		parent = new Composite(parentC, SWT.NULL);
+		ConfigWizard.runType = 1;
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		parent.setLayout(layout);
 		
+		
+
+		runUseAnt = new Button(parent, SWT.RADIO);
+		runUseAnt.setText("Run Use Ant");
+		runUseAnt.addSelectionListener(new SelectionListener() {
+
+			public void handleEvent(SelectionEvent arg0) {
+				methodChosen = true;
+				isAdb = false;
+				if (isComplete()) {
+					wizard.getPageZero().setPageComplete(true);
+					setPageComplete(true);
+				}else setPageComplete(false);
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				handleEvent (arg0) ;
+
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				handleEvent(arg0) ;
+
+			}
+
+		});
+		runUseAdb = new Button(parent, SWT.RADIO);
+		runUseAdb.setText("Run Use Adb");
+		runUseAdb.addSelectionListener(new SelectionListener() {
+
+			public void handleEvent(SelectionEvent arg0) {
+				isAdb = true;
+				methodChosen = true;
+				if (isComplete()) {
+					wizard.getPageZero().setPageComplete(true);
+					setPageComplete(true);
+				}
+				else setPageComplete(false);
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				handleEvent (arg0) ;
+
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				handleEvent(arg0) ;
+
+			}
+
+		});
+		new Label(parent, SWT.NONE);
 		new Label(parent, SWT.NONE).setText("Project Directory");
 		projectDirBox = new Text(parent, SWT.BORDER);
 		projectDirSelectButton = new Button(parent, SWT.PUSH);
@@ -80,7 +141,7 @@ public class ConfigWizardPageOne extends WizardPage {
 		androidBox = new Text(parent, SWT.BORDER);
 		androidSelectButton = new Button(parent, SWT.PUSH);
 		buildSelectionRow(androidBox, androidSelectButton);
-		
+
 		new Label(parent, SWT.NONE).setText("Emma Path");
 		emmaBox = new Text(parent, SWT.BORDER);
 		emmaSelectButton = new Button(parent, SWT.PUSH);
@@ -92,26 +153,16 @@ public class ConfigWizardPageOne extends WizardPage {
 		ls.shell = parent.getShell();
 		ls.text = emmaBox;
 		ls.page =this;
+		NextListener l = new NextListener();
+		l.page = this;
 		emmaSelectButton.addListener(SWT.Selection, ls);
-		
-		getPathProperties();
-		
-		// Required to avoid an error in the system
-		setControl(parent);
-		setPageComplete(false);
-		
-		if (!projectDirBox.getText().isEmpty() && !testDirBox.getText().isEmpty() 
-				&& !emmaBox.getText().isEmpty() && !androidBox.getText().isEmpty()) {
-			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
-			wizard.addPage(nextPage);
-			setPageComplete(true);
-//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo) this.getNextPage();
-//			pageTwo.testDirSelected = testDirBox.getText();
-			
-		}
+		emmaBox.addKeyListener(l);
 
+
+		getPathProperties();
+		setControl(parent);
 	}
-	
+
 	private void buildSelectionRow (Text text, Button button) {
 		button.setText("Choose");
 		text.setText("");
@@ -130,135 +181,117 @@ public class ConfigWizardPageOne extends WizardPage {
 		l.shell = parent.getShell();
 		button.addListener(SWT.Selection, l);	
 	}
-	
+
 	private void getPathProperties() {
 		Properties prop = new Properties();
-    	 
-    	try {
-               //load a properties file
 
-    		prop.load(new FileInputStream("config.properties"));
- 
-            String projectDirectory = prop.getProperty("PROJECT");
-            this.projectDirBox.setText(projectDirectory == null? "" : projectDirectory);
-            
-            String testProjectDirectory = prop.getProperty("TESTPROJECT");
-            this.testDirBox.setText(testProjectDirectory == null? "" : testProjectDirectory);
-            
-            String emmaDirectory = prop.getProperty("EMMA");
-            this.emmaBox.setText(emmaDirectory == null? "" : emmaDirectory);
-            
-            String androidDirectory = prop.getProperty("ANDROID_SDK");
-            this.androidBox.setText(androidDirectory == null? "" : androidDirectory);
-            
-    	} catch (IOException ex) {
-    		ex.printStackTrace();
-        }
+		try {
+			//load a properties file
+
+			prop.load(new FileInputStream("config.properties"));
+
+			String projectDirectory = prop.getProperty("PROJECT");
+			this.projectDirBox.setText(projectDirectory == null? "" : projectDirectory);
+
+			String testProjectDirectory = prop.getProperty("TESTPROJECT");
+			this.testDirBox.setText(testProjectDirectory == null? "" : testProjectDirectory);
+
+			String emmaDirectory = prop.getProperty("EMMA");
+			this.emmaBox.setText(emmaDirectory == null? "" : emmaDirectory);
+
+			String androidDirectory = prop.getProperty("ANDROID_SDK");
+			this.androidBox.setText(androidDirectory == null? "" : androidDirectory);
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
-	
+
 	class NextListener implements KeyListener{
 		ConfigWizardPageOne page;
 		@Override
-		public void keyPressed(KeyEvent arg0) {
-			// TODO Auto-generated method stub
+		public void keyPressed(KeyEvent arg0) { 
+			//
 		}
 
 		@Override
 		public void keyReleased(KeyEvent arg0) {
-			if (projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
-					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
-				return;
-			}
-			System.out.println(testDirBox.getText());
-			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
-			wizard.addPage(nextPage);
-			setPageComplete(true);
-			//ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-			//pageTwo.testDirSelected = testDirBox.getText();
+			if (isComplete()) setPageComplete(true);
+			else setPageComplete(false);
 		}
 	}
 
-	class DirectorySelectListener1 implements Listener{
+
+	void doComplete() {
+		addSlash(projectDirBox);
+		addSlash(testDirBox);				
+		addSlash(androidBox);
+		if (!this.methodChosen) return;
+		nextPage = new ConfigWizardPageTwo(testDirBox.getText());
+		wizard.addPage(nextPage);
+		wizard.getPageZero().setPageComplete(true);
+	}
+
+
+	static void addSlash(Text box) {
+		String s = box.getText();
+		if (!s.endsWith("/")) {
+			box.setText(s+"/");
+		}
+
+	}
+
+	boolean isComplete() {
+		return !(projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
+				|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty());
+	}
+
+	class DirectorySelectListener implements Listener{
+
 		Text text;
 		Shell shell;
 		ConfigWizardPageOne page;
 
 		@Override
 		public void handleEvent(Event arg0) {
-			
-			
+
 			DirectoryDialog dialog = new DirectoryDialog(shell);
 			text.setText(dialog.open());
-			if (projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
-					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
-				return;
-			}
-			System.out.println(testDirBox.getText() + "herererere");
-			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
-			wizard.addPage(nextPage);
-			setPageComplete(true);
-//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-//			pageTwo.testDirSelected = testDirBox.getText();
-					
-			
-		}	
+			if (isComplete()) {
+				setPageComplete(true);
+			}else setPageComplete(false);
+		}
 	}
-	
-	class DirectorySelectListener implements Listener{
-		Text text;
-		Shell shell;
-		ConfigWizardPageOne page;
-
-		@Override
-		public void handleEvent(Event arg0) {
-			
-			
-			DirectoryDialog dialog = new DirectoryDialog(shell);
-			String s = dialog.open();
-			System.out.println(s);
-			text.setText(s);
-			if (projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
-					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
-				return;
-			}
-			System.out.println(testDirBox.getText() + "herererere");
-			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
-			wizard.addPage(nextPage);
-			setPageComplete(true);
-//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-//			pageTwo.testDirSelected = testDirBox.getText();
-					
-			
-		}	
-	}
-
-
 
 	class FileSelectListener implements Listener{
 		Text text;
 		Shell shell;
 		ConfigWizardPageOne page;
+
 		@Override
 		public void handleEvent(Event arg0) {
 			FileDialog dialog = new FileDialog(shell);
 			text.setText(dialog.open());
-			if (projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
-					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
-				return;
-			}
-			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
-			wizard.addPage(nextPage);
-			setPageComplete(true);
-//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-//			pageTwo.testDirSelected = testDirBox.getText();
-//					
+			if (isComplete()) {
+				setPageComplete(true);
+			}else setPageComplete(false);
 		}
 
 	}
-	
+
 	@Override
 	public IWizardPage getNextPage() {
+		doComplete();
 		return this.nextPage;
 	}
+	@Override
+	public IWizardPage getPreviousPage() {
+		return null;
+	}
+	@Override
+	public boolean canFlipToNextPage() {
+		return isAdb && isComplete();
+	}
+	
 	
 }
