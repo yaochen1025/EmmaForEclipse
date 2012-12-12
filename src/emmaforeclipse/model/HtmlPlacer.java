@@ -36,7 +36,8 @@ public class HtmlPlacer {
 			if (!indexFile.exists()) {
 				indexFile.createNewFile();
 				PrintWriter pw = new PrintWriter(indexFile);
-				pw.write(newCoverageFile);
+				String temp = changePathForHref(newCoverageFile);
+				pw.write(temp);
 				pw.flush();
 				pw.close();
 			
