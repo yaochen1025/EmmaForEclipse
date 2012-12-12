@@ -81,9 +81,9 @@ public class RunConfigurationAction extends AbstractHandler implements IWorkbenc
 	private void performAction() {
 		WizardDialog wizardDialog = new WizardDialog(window.getShell(), new  ConfigWizard());
 		if (wizardDialog.open() == Window.OK) {
-			System.out.println("Ok pressed");
+			//System.out.println("Ok pressed");
 		} else {
-			System.out.println("Cancel pressed");
+			//System.out.println("Cancel pressed");
 		}
 	}
 }
