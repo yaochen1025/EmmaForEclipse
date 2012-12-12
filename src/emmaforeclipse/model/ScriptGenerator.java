@@ -1,5 +1,8 @@
 package emmaforeclipse.model;
 
+import java.io.File;
+import java.util.Date;
+
 public abstract class ScriptGenerator {
     
 	protected String projectDir;
@@ -17,6 +20,21 @@ public abstract class ScriptGenerator {
         this.androidDir = androidDir.trim();
         this.antDir = antDir.trim();
         this.javaHomeDir = javaHomeDir.trim();
+    }
+    
+    protected String createFolder() {
+        String reportFolderDir = this.testDir + "report/";
+        File reportFolder = new File(reportFolderDir);  
+        if (!reportFolder.exists()) {
+            reportFolder.mkdir();
+        }
+        String runNumber = new Date().toString();
+        String replaced = runNumber.replaceAll(" ", "-");
+        String dest = reportFolderDir + replaced;
+        HtmlPlacer.runNumber = dest;
+        File coverageFolder = new File(dest);
+        coverageFolder.mkdir();
+        return dest;
     }
     
     public abstract void createShellScriptFile();
