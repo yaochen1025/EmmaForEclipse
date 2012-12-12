@@ -11,6 +11,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -32,6 +34,10 @@ public class ConfigWizardPageOne extends WizardPage {
 	Text emmaBox;
 	ConfigWizard wizard;
 	ConfigWizardPageTwo nextPage;
+	Button runUseAnt;
+	Button runUseAdb;
+	boolean methodChosen = false;
+	public static boolean isAdb = false;
 
 	public String getProjectDir() {
 		return this.projectDirBox.getText();
@@ -41,10 +47,10 @@ public class ConfigWizardPageOne extends WizardPage {
 		return this.testDirBox.getText();
 	}
 
-	public String getEmmaJar() {
+	public String getEmmaPath() {
 		return this.emmaBox.getText();
 	}
-	public String getAndroidPah() {
+	public String getAndroidPath() {
 		return this.androidBox.getText();
 	}
 
@@ -63,10 +69,65 @@ public class ConfigWizardPageOne extends WizardPage {
 	public void createControl(Composite parentC) {
 		wizard = (ConfigWizard) this.getWizard();
 		parent = new Composite(parentC, SWT.NULL);
+		ConfigWizard.runType = 1;
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		parent.setLayout(layout);
+		
+		
 
+		runUseAnt = new Button(parent, SWT.RADIO);
+		runUseAnt.setText("Run Use Ant");
+		runUseAnt.addSelectionListener(new SelectionListener() {
+
+			public void handleEvent(SelectionEvent arg0) {
+				methodChosen = true;
+				isAdb = false;
+				if (isComplete()) {
+					wizard.getPageZero().setPageComplete(true);
+					setPageComplete(true);
+				}else setPageComplete(false);
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				handleEvent (arg0) ;
+
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				handleEvent(arg0) ;
+
+			}
+
+		});
+		runUseAdb = new Button(parent, SWT.RADIO);
+		runUseAdb.setText("Run Use Adb");
+		runUseAdb.addSelectionListener(new SelectionListener() {
+
+			public void handleEvent(SelectionEvent arg0) {
+				isAdb = true;
+				methodChosen = true;
+				if (isComplete()) {
+					wizard.getPageZero().setPageComplete(true);
+					setPageComplete(true);
+				}
+				else setPageComplete(false);
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				handleEvent (arg0) ;
+
+			}
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				handleEvent(arg0) ;
+
+			}
+
+		});
+		new Label(parent, SWT.NONE);
 		new Label(parent, SWT.NONE).setText("Project Directory");
 		projectDirBox = new Text(parent, SWT.BORDER);
 		projectDirSelectButton = new Button(parent, SWT.PUSH);
@@ -93,17 +154,14 @@ public class ConfigWizardPageOne extends WizardPage {
 		ls.shell = parent.getShell();
 		ls.text = emmaBox;
 		ls.page =this;
+		NextListener l = new NextListener();
+		l.page = this;
 		emmaSelectButton.addListener(SWT.Selection, ls);
+		emmaBox.addKeyListener(l);
+
 
 		getPathProperties();
-
-		// Required to avoid an error in the system
 		setControl(parent);
-		setPageComplete(false);
-
-		if (isComplete()){
-			doComplete();
-		}
 	}
 
 	private void buildSelectionRow (Text text, Button button) {
@@ -169,24 +227,24 @@ public class ConfigWizardPageOne extends WizardPage {
 
 		@Override
 		public void keyReleased(KeyEvent arg0) {
-			if (isComplete()) {
-				doComplete();
-			}
+			if (isComplete()) setPageComplete(true);
+			else setPageComplete(false);
 		}
 	}
 
-	private void doComplete() {
+
+	void doComplete() {
 		addSlash(projectDirBox);
-		addSlash(testDirBox);		
-		addSlash(emmaBox);		
+		addSlash(testDirBox);				
 		addSlash(androidBox);
+		if (!this.methodChosen) return;
 		nextPage = new ConfigWizardPageTwo(testDirBox.getText());
 		wizard.addPage(nextPage);
-		setPageComplete(true);
+		wizard.getPageZero().setPageComplete(true);
 	}
-	
 
-	void addSlash(Text box) {
+
+	static void addSlash(Text box) {
 		String s = box.getText();
 		if (!s.endsWith("/")) {
 			box.setText(s+"/");
@@ -194,7 +252,7 @@ public class ConfigWizardPageOne extends WizardPage {
 
 	}
 
-	private boolean isComplete() {
+	boolean isComplete() {
 		return !(projectDirBox.getText().isEmpty() || testDirBox.getText().isEmpty() 
 				|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty());
 	}
@@ -211,8 +269,8 @@ public class ConfigWizardPageOne extends WizardPage {
 			DirectoryDialog dialog = new DirectoryDialog(shell);
 			text.setText(dialog.open());
 			if (isComplete()) {
-				doComplete();
-			}
+				setPageComplete(true);
+			}else setPageComplete(false);
 		}
 	}
 
@@ -226,15 +284,25 @@ public class ConfigWizardPageOne extends WizardPage {
 			FileDialog dialog = new FileDialog(shell);
 			text.setText(dialog.open());
 			if (isComplete()) {
-				doComplete();
-			}
+				setPageComplete(true);
+			}else setPageComplete(false);
 		}
 
 	}
 
 	@Override
 	public IWizardPage getNextPage() {
+		doComplete();
 		return this.nextPage;
 	}
-
+	@Override
+	public IWizardPage getPreviousPage() {
+		return null;
+	}
+	@Override
+	public boolean canFlipToNextPage() {
+		return isAdb && isComplete();
+	}
+	
+	
 }

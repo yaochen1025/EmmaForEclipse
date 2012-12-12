@@ -34,8 +34,6 @@ public class ScriptRunner extends Job implements Runnable {
 		Process pr;
 		try {
 			pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
-
-
 			pr.waitFor();
 			InputStream inputStream = pr.getInputStream();
 			writeFile(inputStream);
@@ -47,9 +45,15 @@ public class ScriptRunner extends Job implements Runnable {
 			e.printStackTrace();
 		}
 
+		HtmlPlacer hp = new HtmlPlacer(testDir.trim());
+		boolean b = hp.finishUp();
+		if (b) {
+			hp.updateIndexHtml();
+		}
+		
 		final Shell shell = new Shell(display);		
 		Browser browser = new Browser(shell);
-		browser.setUrl(testDir.trim() + "bin/coverage.html");
+		browser.setUrl(testDir.trim() + "report/index.html");
 		shell.open();
 
 	}
