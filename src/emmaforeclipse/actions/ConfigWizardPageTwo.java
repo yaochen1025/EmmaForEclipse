@@ -20,7 +20,7 @@ public class ConfigWizardPageTwo extends WizardPage {
 	public String testDirSelected;
 	ConfigWizard wizard;
 	ConfigWizardPageThree nextPage;
-
+	public static String packageSelected = "";
 	public ConfigWizardPageTwo(String testDirSelected) {
 		super("Package");
 		setTitle("Packages - using adb");
@@ -30,6 +30,7 @@ public class ConfigWizardPageTwo extends WizardPage {
 
 	@Override
 	public void createControl(Composite parent) {
+		ConfigWizard.runType = 2;
 		wizard = (ConfigWizard) this.getWizard();
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
@@ -64,8 +65,7 @@ public class ConfigWizardPageTwo extends WizardPage {
 		public void handleEvent(SelectionEvent arg0) {
 			Button button = (Button) arg0.widget;
 			if (button.getSelection()) {
-				nextPage = new ConfigWizardPageThree(button.getText(),testDirSelected );
-				wizard.addPage(nextPage);
+				packageSelected = button.getText();
 				setPageComplete(true);
 
 			}
@@ -84,7 +84,14 @@ public class ConfigWizardPageTwo extends WizardPage {
 
 	@Override
 	public IWizardPage getNextPage() {
+		nextPage = new ConfigWizardPageThree(packageSelected ,testDirSelected );
+		wizard.addPage(nextPage);
 		return this.nextPage;
+	}
+	
+	@Override
+	public IWizardPage getPreviousPage() {
+		return null;
 	}
 
 }

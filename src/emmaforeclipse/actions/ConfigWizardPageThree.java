@@ -2,6 +2,7 @@ package emmaforeclipse.actions;
 
 import java.util.ArrayList;
 
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -16,6 +17,8 @@ import emmaforeclipse.model.TestSelection;
 
 public class ConfigWizardPageThree extends WizardPage {
 
+	
+	int numOfCheckedBox = 0;
 	protected ConfigWizardPageThree(String selectedPackage, String testDirSelected) {
 		super("Class");
 		setTitle("Class - using adb");
@@ -27,12 +30,13 @@ public class ConfigWizardPageThree extends WizardPage {
 
 	private String selectedPackage;
 	private String testDirSelected;
+	private static Button[] checkBoxs;
 
 	public Composite container = null;
 
 	@Override
 	public void createControl(Composite parent) {
-		
+		ConfigWizard.runType = 3;
 		container = new Composite(parent, SWT.DOUBLE_BUFFERED);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
@@ -51,7 +55,7 @@ public class ConfigWizardPageThree extends WizardPage {
 			int length = classNames.size();
 		
 
-			Button[] checkBoxs = new Button[length];
+			checkBoxs = new Button[length];
 			for (int i = 0; i < length; i++) {
 				checkBoxs[i] = new Button(container, SWT.CHECK);
 				checkBoxs[i].setText(classNames.get(i));
@@ -71,9 +75,14 @@ public class ConfigWizardPageThree extends WizardPage {
 		Button checkedBox;
 
 		public void handleEvent(SelectionEvent arg0) {
-			System.out.println("I checked " + checkedBox.getText());
-			setPageComplete(true);
-		
+			boolean isSelected = checkedBox.getSelection();
+			if (isSelected) {
+				numOfCheckedBox ++;
+			} else {
+				numOfCheckedBox --;
+			}
+			if (numOfCheckedBox > 0) setPageComplete(true);
+			else setPageComplete(false);
 		}
 
 		@Override
@@ -86,6 +95,18 @@ public class ConfigWizardPageThree extends WizardPage {
 			handleEvent(arg0);
 		}
 	}
+	
+	@Override
+	public IWizardPage getPreviousPage() {
+		return null;
+	}
 
+	public static ArrayList<String> getSelectedTests() {
+		ArrayList<String> testsSelected = new ArrayList<String>();
+		for (Button button : checkBoxs) {
+			if (button.getSelection())  testsSelected.add(button.getText());
+		}
+		return testsSelected;
+	}
 
 }
