@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -24,11 +25,12 @@ import org.eclipse.swt.widgets.Text;
 public class ConfigWizardPageOne extends WizardPage {
 	
 	private Composite parent;
-	
 	Text projectDirBox;
 	Text testDirBox;
 	Text androidBox;
 	Text emmaBox;
+	ConfigWizard wizard;
+	ConfigWizardPageTwo nextPage;
 
 	public String getProjectDir() {
 		return this.projectDirBox.getText();
@@ -58,6 +60,7 @@ public class ConfigWizardPageOne extends WizardPage {
 
 	@Override
 	public void createControl(Composite parentC) {
+		wizard = (ConfigWizard) this.getWizard();
 		parent = new Composite(parentC, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
@@ -99,9 +102,11 @@ public class ConfigWizardPageOne extends WizardPage {
 		
 		if (!projectDirBox.getText().isEmpty() && !testDirBox.getText().isEmpty() 
 				&& !emmaBox.getText().isEmpty() && !androidBox.getText().isEmpty()) {
+			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
+			wizard.addPage(nextPage);
 			setPageComplete(true);
-			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo) this.getNextPage();
-			pageTwo.testDirSelected = testDirBox.getText();
+//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo) this.getNextPage();
+//			pageTwo.testDirSelected = testDirBox.getText();
 			
 		}
 
@@ -164,9 +169,12 @@ public class ConfigWizardPageOne extends WizardPage {
 					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
 				return;
 			}
+			
+			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
+			wizard.addPage(nextPage);
 			setPageComplete(true);
-			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-			pageTwo.testDirSelected = testDirBox.getText();
+			//ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
+			//pageTwo.testDirSelected = testDirBox.getText();
 		}
 	}
 
@@ -185,9 +193,11 @@ public class ConfigWizardPageOne extends WizardPage {
 					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
 				return;
 			}
+			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
+			wizard.addPage(nextPage);
 			setPageComplete(true);
-			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-			pageTwo.testDirSelected = testDirBox.getText();
+//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
+//			pageTwo.testDirSelected = testDirBox.getText();
 					
 			
 		}	
@@ -206,12 +216,19 @@ public class ConfigWizardPageOne extends WizardPage {
 					|| emmaBox.getText().isEmpty() || androidBox.getText().isEmpty()) {
 				return;
 			}
+			nextPage = new ConfigWizardPageTwo(testDirBox.getText());
+			wizard.addPage(nextPage);
 			setPageComplete(true);
-			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
-			pageTwo.testDirSelected = testDirBox.getText();
-					
+//			ConfigWizardPageTwo pageTwo = (ConfigWizardPageTwo)page.getNextPage();
+//			pageTwo.testDirSelected = testDirBox.getText();
+//					
 		}
 
+	}
+	
+	@Override
+	public IWizardPage getNextPage() {
+		return this.nextPage;
 	}
 	
 }

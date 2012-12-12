@@ -28,10 +28,10 @@ public class ConfigWizard extends Wizard {
 	public void addPages() {
 		zero = new WizardPageWelcome();
 		one = new ConfigWizardPageOne();
-		two = new ConfigWizardPageTwo();
+	//	two = new ConfigWizardPageTwo();
 		addPage(zero);
 		addPage(one);
-		addPage(two);
+	//	addPage(two);
 	}
 	
 

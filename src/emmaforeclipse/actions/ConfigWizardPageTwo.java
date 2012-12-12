@@ -21,10 +21,11 @@ public class ConfigWizardPageTwo extends WizardPage {
 	ConfigWizard wizard;
 	ConfigWizardPageThree nextPage;
 
-	public ConfigWizardPageTwo() {
+	public ConfigWizardPageTwo(String testDirSelected) {
 		super("Package");
 		setTitle("Packages - using adb");
 		setDescription("choose one package to run");
+		this.testDirSelected = testDirSelected;
 	}
 
 	@Override
