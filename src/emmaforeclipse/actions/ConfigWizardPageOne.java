@@ -40,10 +40,10 @@ public class ConfigWizardPageOne extends WizardPage {
 		return this.testDirBox.getText();
 	}
 
-	public String getEmmaJar() {
+	public String getEmmaPath() {
 		return this.emmaBox.getText();
 	}
-	public String getAndroidPah() {
+	public String getAndroidPath() {
 		return this.androidBox.getText();
 	}
 

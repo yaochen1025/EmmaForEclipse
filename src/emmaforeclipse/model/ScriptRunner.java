@@ -34,8 +34,6 @@ public class ScriptRunner extends Job implements Runnable {
 		Process pr;
 		try {
 			pr = runtime.exec("sh " + testDir.trim() + "src/temp.sh");
-
-
 			pr.waitFor();
 			InputStream inputStream = pr.getInputStream();
 			writeFile(inputStream);

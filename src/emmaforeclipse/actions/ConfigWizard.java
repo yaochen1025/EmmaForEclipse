@@ -21,8 +21,6 @@ public class ConfigWizard extends Wizard {
 		setWindowTitle("Emma For Eclipse"); 
 		setNeedsProgressMonitor(true);
 	}
-	
-	
 
 	@Override
 	public void addPages() {
@@ -34,14 +32,12 @@ public class ConfigWizard extends Wizard {
 	//	addPage(two);
 	}
 	
-
-
 	@Override
 	public boolean performFinish() {
 		String projectDir = one.getProjectDir();
 		String testDir = one.getTestDir();
-		String emmaPath = one.getEmmaJar();
-		String androidDir = one.getAndroidPah();
+		String emmaPath = one.getEmmaPath();
+		String androidDir = one.getAndroidPath();
 
 		Properties prop = new Properties();
 		try {

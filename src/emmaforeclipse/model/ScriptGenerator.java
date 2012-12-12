@@ -1,7 +1,8 @@
 package emmaforeclipse.model;
 
 public abstract class ScriptGenerator {
-    protected String projectDir;
+    
+	protected String projectDir;
     protected String testDir;
     protected String emmaPath;
     protected String androidDir;
