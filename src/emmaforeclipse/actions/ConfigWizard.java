@@ -27,6 +27,7 @@ public class ConfigWizard extends Wizard {
 	public WizardPageWelcome getPageZero() {
 		return this.zero;
 	}
+
 	@Override
 	public void addPages() {
 		zero = new WizardPageWelcome();
@@ -65,7 +66,7 @@ public class ConfigWizard extends Wizard {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		if (runType == 1 && !ConfigWizardPageOne.isAdb) {
 			ScriptGenerator scriptGenerator = new ScriptGeneratorAnt(projectDir, testDir, emmaPath, androidDir,
 					"", "");
@@ -78,24 +79,24 @@ public class ConfigWizard extends Wizard {
 			System.out.println("adb run all");
 			return true;
 		}
-		
+
 		String packageSelected = ConfigWizardPageTwo.packageSelected;
-		
+
 		if (runType == 2 ) {	
 			System.out.println( packageSelected + " adb run Package");
 			return true;
 		}
-		
+
 		if (runType == 3 ) {	
 			ArrayList<String> testsSelected = ConfigWizardPageThree.getSelectedTests();
 			System.out.println( packageSelected + " adb run test classes");
 			for (String test : testsSelected) {
 				System.out.println(test);
 			}
-		
+
 			return true;
 		}
-		
+
 		return true;
 
 	}
