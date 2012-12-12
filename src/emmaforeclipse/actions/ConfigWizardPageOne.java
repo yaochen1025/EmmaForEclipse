@@ -109,7 +109,7 @@ public class ConfigWizardPageOne extends WizardPage {
 				isAdb = true;
 				methodChosen = true;
 				if (isComplete()) {
-					wizard.getPageZero().setPageComplete(true);
+					//wizard.getPageZero().setPageComplete(true);
 					setPageComplete(true);
 				}
 				else setPageComplete(false);
