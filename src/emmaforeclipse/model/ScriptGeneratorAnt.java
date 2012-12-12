@@ -58,7 +58,9 @@ public class ScriptGeneratorAnt extends ScriptGenerator{
 //			File file = new File("run.properties");
 //			if(!file.exists()) file.createNewFile();
 			prop.load(new FileInputStream("run.properties"));
-			prop.setProperty("NEXTRUN", this.generateShellScriptString() );
+			String script = this.generateShellScriptString();
+			prop.setProperty("NEXTRUN", script);
+			System.out.println(script);
 			prop.setProperty("SCRIPTCONTAINER", this.testDir);
 			FileOutputStream f = new FileOutputStream("run.properties");
         	prop.store(f, "");
