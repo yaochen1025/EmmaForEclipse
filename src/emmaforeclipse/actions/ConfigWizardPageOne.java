@@ -1,6 +1,7 @@
 package emmaforeclipse.actions;
 
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -130,7 +131,15 @@ public class ConfigWizardPageOne extends WizardPage {
 		try {
 			//load a properties file
 
-			prop.load(new FileInputStream("config.properties"));
+/*		    File file = new File("workspace/EmmaForEclipse/config.properties");
+		    System.out.println(file.getAbsolutePath());
+		    
+		    FileInputStream f = new FileInputStream(file);
+		    System.out.println("good");
+		    prop.load(f);
+		    System.out.println("better");
+*/		    
+			prop.load(new FileInputStream(new File("config.properties")));
 
 			String projectDirectory = prop.getProperty("PROJECT");
 			this.projectDirBox.setText(projectDirectory == null? "" : projectDirectory);
@@ -146,6 +155,8 @@ public class ConfigWizardPageOne extends WizardPage {
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
+		} catch (Exception e) {
+		    e.printStackTrace();
 		}
 	}
 

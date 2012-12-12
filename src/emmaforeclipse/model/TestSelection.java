@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class TestSelection {
-	private static String DEFAULT_PACKAGE_NAME =  "(Default)";
+	private static String DEFAULT_PACKAGE_NAME =  "(Default) - not supported by adb";
 	private Hashtable<String, ArrayList<String>> testPackageMap;
 	private ArrayList<String> testClassList;
 
@@ -101,6 +101,9 @@ public class TestSelection {
 	private ArrayList<String> getAbsoluteTestFilePath(String path) {
 		File root = new File(path);
 		ArrayList<String> fileList = new ArrayList<String>();
+		if (!root.exists()) {
+		    return fileList;
+		}
 		File[] list = root.listFiles();
 		for (File file : list) {
 			if (file.isDirectory()) {
@@ -108,7 +111,7 @@ public class TestSelection {
 				for (String subFile : subFileList) {
 					fileList.add(subFile);
 				}
-			} else {
+			} else if (file.isFile()) {
 				String fileName = file.getAbsolutePath();
 				if (fileName.endsWith(".java")) {
 					fileList.add(fileName);

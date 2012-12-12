@@ -4,12 +4,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ScriptGeneratorAdb extends ScriptGenerator{
     private String projectPackageName;
     private String testPackageName;
     private String testRunnerName;
+    private ArrayList<String> testClassNameList;
     
+    // run all classes within the test package with default test runner
     public ScriptGeneratorAdb(String projectDir, String testDir, String emmaPath,
             String androidDir, String antDir, String javaHomeDir, String projectPackageName,
             String testPackageName) {
@@ -17,14 +20,35 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
         this.projectPackageName = projectPackageName.trim();
         this.testPackageName = testPackageName.trim();
         this.testRunnerName = "android.test.InstrumentationTestRunner";
+        this.testClassNameList = null;
     }
     
+    // run all classes within the test package with user-defined test runner
     public ScriptGeneratorAdb(String projectDir, String testDir, String emmaPath,
             String androidDir, String antDir, String javaHomeDir, String projectPackageName,
             String testPackageName, String testRunnerName) {
         this(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir, projectPackageName,
                 testPackageName);
         this.testRunnerName = testRunnerName.trim();
+    }
+    
+    // run user-defined classes within the test package with default test runner
+    public ScriptGeneratorAdb(String projectDir, String testDir, String emmaPath,
+            String androidDir, String antDir, String javaHomeDir, String projectPackageName,
+            String testPackageName, ArrayList<String> testClassNameList) {
+        this(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir, projectPackageName,
+                testPackageName);
+        this.testClassNameList = testClassNameList;
+    }
+    
+    // run user-defined classes within the test package with user-defined test runner
+    public ScriptGeneratorAdb(String projectDir, String testDir, String emmaPath,
+            String androidDir, String antDir, String javaHomeDir, String projectPackageName,
+            String testPackageName, String testRunnerName, ArrayList<String> testClassNameList) {
+        this(projectDir, testDir, emmaPath, androidDir, antDir, javaHomeDir, projectPackageName,
+                testPackageName);
+        this.testRunnerName = testRunnerName.trim();
+        this.testClassNameList = testClassNameList;
     }
     
     @Override
@@ -50,11 +74,35 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
         sb.append("adb remount\n");
         sb.append("adb push " + emmaPath + " /system/framework\n");
         sb.append("cd " + testDir + "\n");
-        /// install apk???
+        /// install apk
+        String testDirName = testDir;
+        if (testDirName.endsWith("/")) {
+            testDirName = testDirName.substring(0, testDirName.length() - 1);
+        }
+        int index = testDirName.lastIndexOf('/');
+        testDirName = testDirName.substring(index + 1);
+        sb.append("adb install -r bin/" + testDirName + ".apk\n");
+        String projectDirName = projectDir;
+        if (projectDirName.endsWith("/")) {
+            projectDirName = projectDirName.substring(0, projectDirName.length() - 1);
+        }
+        int index2 = projectDirName.lastIndexOf('/');
+        projectDirName = projectDirName.substring(index2 + 1);
+        sb.append("adb install -r ../" + projectDirName + "/bin/" + projectDirName + ".apk\n");
+        
         sb.append("java -cp " + emmaPath + " emma instr -m overwrite -ip " + projectDir 
                 + "bin/\n");
-        sb.append("adb shell am instrument -w -e coverage true " + testPackageName + "/" 
-                + testRunnerName + "\n");
+        sb.append("adb shell am instrument -w -e coverage true ");
+        if (testClassNameList != null && testClassNameList.size() != 0) {
+            sb.append("-e class ");
+            for (String className : testClassNameList) {
+                sb.append(testPackageName + "." + className + ",");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append(' ');
+        }
+        sb.append(testPackageName + "/" + testRunnerName + "\n");
+
         sb.append("adb pull /data/data/" + projectPackageName + "/files/coverage.ec .\n");
         sb.append("java -cp " + emmaPath + " emma report -r html -in coverage.ec,coverage.em -sp " + projectDir + "src/\n");
         return sb.toString();
