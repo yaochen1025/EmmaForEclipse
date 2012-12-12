@@ -80,15 +80,18 @@ public class HtmlPlacer {
 	private String readFile(File file) {
 		StringBuilder sb = new StringBuilder();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
+		    BufferedReader br = new BufferedReader(new FileReader(file));
 			int read = 0;
 			while (true) {
 				read = br.read();
 				if (read == -1) break;
 				else sb.append( (char) read);
 			}
+            br.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
 		}
 		System.out.println(sb.toString());
 		return sb.toString();

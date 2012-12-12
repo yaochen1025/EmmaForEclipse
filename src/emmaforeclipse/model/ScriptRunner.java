@@ -51,10 +51,10 @@ public class ScriptRunner extends Job implements Runnable {
 			hp.updateIndexHtml();
 		}
 		
-		final Shell shell = new Shell(display);		
-		Browser browser = new Browser(shell);
-		browser.setUrl(testDir.trim() + "report/index.html");
-		shell.open();
+//		final Shell shell = new Shell(display);		
+//		Browser browser = new Browser(shell);
+//		browser.setUrl(testDir.trim() + "report/index.html");
+//		shell.open();
 
 	}
 

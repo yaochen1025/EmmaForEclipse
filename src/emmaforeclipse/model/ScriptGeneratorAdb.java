@@ -2,9 +2,12 @@ package emmaforeclipse.model;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class ScriptGeneratorAdb extends ScriptGenerator{
     private String projectPackageName;
@@ -110,7 +113,23 @@ public class ScriptGeneratorAdb extends ScriptGenerator{
 
 	@Override
 	public void setConfig() {
-		// TODO Auto-generated method stub
+	      Properties prop = new Properties();
+
+	        try {
+	            //load a properties file
+//	          File file = new File("run.properties");
+//	          if(!file.exists()) file.createNewFile();
+	            prop.load(new FileInputStream("run.properties"));
+	            String script = this.generateShellScriptString();
+	            prop.setProperty("NEXTRUN", script);
+	            System.out.println(script);
+	            prop.setProperty("SCRIPTCONTAINER", this.testDir);
+	            FileOutputStream f = new FileOutputStream("run.properties");
+	            prop.store(f, "");
+	            
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
 		
 	}
 }

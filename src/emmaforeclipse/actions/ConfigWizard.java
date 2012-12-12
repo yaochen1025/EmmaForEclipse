@@ -75,26 +75,30 @@ public class ConfigWizard extends Wizard {
 		} 
 
 
-		if (runType == 1 && ConfigWizardPageOne.isAdb) {	
-			System.out.println("adb run all");
-			return true;
-		}
+//		if (runType == 1 && ConfigWizardPageOne.isAdb) {	
+//			
+//			return true;
+//		}
 
 		String packageSelected = ConfigWizardPageTwo.packageSelected;
 
-		if (runType == 2 ) {	
-			System.out.println( packageSelected + " adb run Package");
+		if (runType == 2 ) {
+		    int index = packageSelected.lastIndexOf('.');
+		    String projPackage = packageSelected.substring(0, index);
+			ScriptGenerator scriptGenerator = new ScriptGeneratorAdb(projectDir, testDir, emmaPath, androidDir,
+			        "", "", projPackage, packageSelected);
+			scriptGenerator.setConfig();
 			return true;
 		}
 
 		if (runType == 3 ) {	
 			ArrayList<String> testsSelected = ConfigWizardPageThree.getSelectedTests();
-			System.out.println( packageSelected + " adb run test classes");
-			for (String test : testsSelected) {
-				System.out.println(test);
-			}
-
-			return true;
+	         int index = packageSelected.lastIndexOf('.');
+	         String projPackage = packageSelected.substring(0, index);
+	         ScriptGenerator scriptGenerator = new ScriptGeneratorAdb(projectDir, testDir, emmaPath, androidDir,
+	                    "", "", projPackage, packageSelected, testsSelected);
+	         scriptGenerator.setConfig();
+	         return true;
 		}
 
 		return true;
