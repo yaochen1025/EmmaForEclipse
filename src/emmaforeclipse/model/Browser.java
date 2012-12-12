@@ -48,7 +48,7 @@ public class Browser {
 		data.horizontalSpan = 1;
 		toolbar.setLayoutData(data);
 
-		final Text location = new Text(shell, SWT.BORDER);
+		location = new Text(shell, SWT.BORDER);
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.horizontalSpan = 2;
@@ -76,11 +76,26 @@ public class Browser {
 			public void handleEvent(Event event) {
 				ToolItem item = (ToolItem)event.widget;
 				String string = item.getText();
-				if (string.equals("Back")) browser.back(); 
-				else if (string.equals("Forward")) browser.forward();
-				else if (string.equals("Stop")) browser.stop();
-				else if (string.equals("Refresh")) browser.refresh();
-				else if (string.equals("Go")) browser.setUrl(location.getText());
+				if (string.equals("Back")) {
+					browser.back(); 
+					location.setText(browser.getUrl());
+				}
+				else if (string.equals("Forward")) {
+					browser.forward();
+					location.setText(browser.getUrl());
+				}
+				else if (string.equals("Stop")) {
+					browser.stop();
+					location.setText(browser.getUrl());
+				}
+				else if (string.equals("Refresh")) {
+					browser.refresh();
+					location.setText(browser.getUrl());
+				}
+				else if (string.equals("Go")) {
+					browser.setUrl(location.getText());
+					location.setText(browser.getUrl());
+				}
 			}
 		};
 
@@ -96,7 +111,10 @@ public class Browser {
 		});	
 	}
 	
+	Text location;
+	
 	public void setUrl(String url) {
+		location.setText(url);
 		browser.setUrl(url);
 	}
 
