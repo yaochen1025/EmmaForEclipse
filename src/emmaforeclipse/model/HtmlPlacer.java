@@ -81,9 +81,10 @@ public class HtmlPlacer {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			int read = 0;
-			while (read != -1) {
+			while (true) {
 				read = br.read();
-				sb.append( (char) read);
+				if (read == -1) break;
+				else sb.append( (char) read);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
